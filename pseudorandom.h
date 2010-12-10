@@ -16,9 +16,8 @@ public:
   double Normal(double mi, double sigma);
   double Weibull(double shape, double scale);
   int    Poisson(double lambda);
+  double Gamma(double alpha, double beta);
 
 private:
 
 };
-
-

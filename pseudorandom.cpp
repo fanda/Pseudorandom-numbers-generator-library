@@ -106,3 +106,41 @@ int RandomGenerator::Poisson(double lambda)
   old_lambda = lambda;
   return k;
 }
+
+double RandomGenerator::Gamma(double alpha, double beta) {
+  double oalpha, a1, a2;
+  oalpha = alpha;
+  //Doub a1,a2;
+  //Gammadev(Doub aalph, Doub bbet, Ullong i)
+  //: Normaldev(0.,1.,i), alph(aalph), oalph(aalph), bet(bbet) {
+  //Constructor arguments are  ̨, ˇ , and a random sequence seed.
+  if (alpha <= 0.) {
+    throw("bad alpha in Gammadev");
+  }
+  if (alpha < 1.) {
+    alpha += 1.;
+  }
+  a1 = alpha-1./3.;
+  a2 = 1./sqrt(9.*a1);
+
+  /*Return a gamma deviate by the method of Marsaglia and Tsang.*/
+  double u,v,x;
+  do {
+    do {
+      x = Normal(0, 1);
+      v = 1. + a2*x;
+    } while (v <= 0.);
+    v = v*v*v;
+    u = Random_real1();
+  } while (u > (1. - 0.331 * x * x * x * x) &&
+      log(u) > 0.5 * x * x + a1*(1.-v+log(v))); //Rarely evaluated.
+  if (alpha == oalpha) {
+    return a1*v/beta;
+  }
+  else {// Case where  ̨ < 1, per Ripley.
+    do {
+	    u = Random_real1();
+    }while (u == 0.);
+    return pow(u,1./oalpha)*a1*v/beta;
+  }
+}
