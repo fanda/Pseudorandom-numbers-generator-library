@@ -110,10 +110,6 @@ int RandomGenerator::Poisson(double lambda)
 double RandomGenerator::Gamma(double alpha, double beta) {
   double oalpha, a1, a2;
   oalpha = alpha;
-  //Doub a1,a2;
-  //Gammadev(Doub aalph, Doub bbet, Ullong i)
-  //: Normaldev(0.,1.,i), alph(aalph), oalph(aalph), bet(bbet) {
-  //Constructor arguments are  ̨, ˇ , and a random sequence seed.
   if (alpha <= 0.) {
     throw("bad alpha in Gammadev");
   }
