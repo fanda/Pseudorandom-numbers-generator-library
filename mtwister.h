@@ -62,22 +62,20 @@ Random()
 inline double 
 Random_real1() /* random number on [0,1]-real-interval */
 {
-  return static_cast<double>((long)Random()) * (1. / DOUB_ULONG_MAX);
+  return static_cast<double>(Random()) * (1. / DOUB_ULONG_MAX);
 }
 
 inline double 
 Random_real2() /* random number on [0,1)-real-interval */
 {
-  return static_cast<double>((long)Random()) * (1. / DOUB_ULONG_MAX_PP);
+  return static_cast<double>(Random()) * (1. / DOUB_ULONG_MAX_PP);
 }
 
 inline double 
 Random_real3() /* random number on (0,1)-real-interval */
 {
-  return static_cast<double>((long)Random() + 0.5) * (1. / DOUB_ULONG_MAX_PP);
+  return static_cast<double>(Random() + 0.5) * (1. / DOUB_ULONG_MAX_PP);
 }
-  /* Look at (long) converting before Random(). This can sped function up
-     on some platforms.   (by Wouter Kager)   */
 
 private:   
     static const int n = N, m = M;
