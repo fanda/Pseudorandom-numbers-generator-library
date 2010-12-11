@@ -12,10 +12,10 @@
 
 int main(int argc, char *argv[])
 {
-  RandomGenerator rg((unsigned long)time(NULL));
+  RandomGenerator<MT32> rg((unsigned long)time(NULL));
   
 /*  for (int i = 0; i < 10; i++)
-    std::cout<< rg.Random() <<std::endl;
+    std::cout<< rg.Uniform(1,100) <<std::endl;
   std::cout<<std::endl;*/
 
 /*  for (int i = 0; i < 1000000; i++)
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   //std::cout<<std::endl;*/
 
   for (int i = 0; i < 1000000; i++)
-    std::cout<< rg.Weibull(5, 1) <<std::endl;
+    std::cout<< rg.Weibull(1, 5) <<std::endl;
   //std::cout<<std::endl;*/
 
 /*  for (int i = 0; i < 1000000; i++) {
@@ -43,8 +43,10 @@ int main(int argc, char *argv[])
 
   //std::cout<<std::endl;*/
    
-/*  for (int i = 0; i < 100000; i++) {
-    std::cout << rg.Gamma(5, 1) << std::endl;
+  /*for (int i = 0; i < 100000; i++) {
+    int i = rg.Poisson(1.);
+    if (i < 50)
+    std::cout << i << std::endl;
   }*/
   return 0;
 }

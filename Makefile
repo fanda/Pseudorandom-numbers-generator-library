@@ -20,8 +20,8 @@ all: $(BIN)
 
 ################################################################################
 # linkovani vysledneho souboru
-$(BIN):	main.o pseudorandom.o mtwister.o
-	$(CPP) main.o pseudorandom.o mtwister.o -o $(BIN) $(LIBS)
+$(BIN):	main.o 
+	$(CPP) main.o -o $(BIN) $(LIBS)
 #	strip $(BIN)
 
 ################################################################################
@@ -31,13 +31,13 @@ main.o: main.cpp
 
 ################################################################################
 # kompilace testu
-pseudorandom.o: pseudorandom.cpp
-	$(CPP) -c pseudorandom.cpp -o pseudorandom.o $(CXXFLAGS)
+#pseudorandom.o: pseudorandom.cpp
+#	$(CPP) -c pseudorandom.cpp -o pseudorandom.o $(CXXFLAGS)
 
 ################################################################################
 # kompilace studentskeho souboru
-mtwister.o: mtwister.cpp
-	$(CPP) -c mtwister.cpp -o mtwister.o $(CXXFLAGS)
+#mtwister.o: mtwister.cpp
+#	$(CPP) -c mtwister.cpp -o mtwister.o $(CXXFLAGS)
 
 
 ################################################################################
