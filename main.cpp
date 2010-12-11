@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
     std::cout<< rg.Random_real1() <<std::endl;*/
   //std::cout<<std::endl;*/
 
-/*  for (int i = 0; i < 10000; i++)
-    std::cout<< rg.Weibull(1.0, 5) <<std::endl;
+  for (int i = 0; i < 1000000; i++)
+    std::cout<< rg.Weibull(5, 1) <<std::endl;
   //std::cout<<std::endl;*/
 
 /*  for (int i = 0; i < 1000000; i++) {
@@ -43,9 +43,9 @@ int main(int argc, char *argv[])
 
   //std::cout<<std::endl;*/
    
-  for (int i = 0; i < 100000; i++) {
+/*  for (int i = 0; i < 100000; i++) {
     std::cout << rg.Gamma(5, 1) << std::endl;
-  }
+  }*/
   return 0;
 }
 
