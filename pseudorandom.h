@@ -33,7 +33,7 @@ template <class UniformGenerator>
 double 
 RandomGenerator<UniformGenerator>::Exponential(double lambda)
 {   
-  return (-1./ lambda) * std::log(this->Random_real1());
+  return (-1./ lambda) * std::log(this->Random_real3());
 }
 
 
@@ -166,10 +166,7 @@ RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta) {
   if (alpha == oalpha) {
     return a1*v/beta;
   }
-  else {// Case where  ̨ < 1, per Ripley.
-    do {
-	    u = this->Random_real1();
-    }while (u == 0.);
-    return pow(u,1./oalpha)*a1*v/beta;
+  else {// Case where alpha < 1, per Ripley.
+    return pow(this->Random_real3(), 1./ oalpha) * a1 * v / beta;    
   }
 }
