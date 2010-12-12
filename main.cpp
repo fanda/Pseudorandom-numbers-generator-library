@@ -1,9 +1,10 @@
 /*
  * Soubor:  main.cpp
- * Datum:   29.11.2010 14:21
- * Autor:   
- * Projekt: 
- * Popis:   
+ * Datum:   12.12.2010
+ * Autori:  Pavel Novotny, xnovot28@stud.fit.vutbr.cz
+ *          Ota Pavelek, xpavel08@stud.fit.vutbr.cz
+ * Projekt: Knihovna pro generovani pseudonahodnych cisel
+ * Popis:   Program pro otestovani generatoru nahodnych cisel
  */
 
 #include "pseudorandom.h"
@@ -16,16 +17,19 @@
 
 using std::string;
 using std::endl;
+using std::cout;
 
 void printHelp() {
-  std::cout << "napoveda:" << endl;
-  std::cout << "seznam parametru:" << endl;
-  std::cout << "  -h nebo --help tiskne tuto napovedu" << endl;
-  std::cout << "  uniform, exponential, normal, weibull, poisson, gamma otestuji pruslusne rozlozeni" << endl;
-  std::cout << "  all otestuje vsechna rozlozeni" << endl;
-  std::cout << "priklad pouziti:" << endl;
-  std::cout << "  ./test normal uniform exponential\t otestuje normalni, rovnomerne a exponencialni rozlozeni" << endl;
-  std::cout << "kazde rozlozeni je testovano se tremi ruznymi parametry a 100000 vygenerovanymi hodnotami" << endl;
+  cout << "Napoveda testovaciho programu:" << endl;
+  cout << "seznam parametru:" << endl;
+  cout << "\t-h | --help" << endl;
+  cout << "\t\ttiskne tuto napovedu" << endl;
+  cout << "\tuniform | exponential | normal | weibull | poisson | gamma" << endl;
+  cout << "\t\totestuje pruslusna rozlozeni" << endl;
+  cout << "\tall\n\t\totestuje vsechna rozlozeni" << endl << endl;
+  cout << "priklad pouziti: ./test normal uniform exponential" << endl;
+  cout << "\totestuje normalni, rovnomerne a exponencialni rozlozeni" << endl << endl;
+  cout << "POZN.: kazde rozlozeni je testovano se tremi ruznymi parametry a 100000 vygenerovanymi hodnotami" << endl;
 }
 
 int main(int argc, char *argv[])
