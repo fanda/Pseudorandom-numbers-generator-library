@@ -43,7 +43,7 @@
 class MT32 : public AbstractUniformGenerator
 {
 public:
-    MT32(unsigned long seed) { seed(s); }
+    MT32(unsigned long s) { seed(s); }
     MT32(unsigned long * init_vector, int size) { seed(init_vector, size); }
     ~MT32() {}
 
