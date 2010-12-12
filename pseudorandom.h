@@ -65,7 +65,7 @@ RandomGenerator<UniformGenerator>::Weibull(double shape, double scale)
     /*if (shape < 1) TODO
       return +Inf;*/
   }
-  return scale * std::pow(-1.* std::log(random_number), 1./ shape);
+  return scale * std::pow(-1.* std::log(1 - random_number), 1./ shape);
 }
 
 template <class UniformGenerator>

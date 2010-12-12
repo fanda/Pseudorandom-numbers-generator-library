@@ -48,6 +48,22 @@ int main(int argc, char *argv[])
   file2.close();
   file3.close();
 
+
+  //FIXME testovat jestli se povedlo
+  file1.open("weibull_5_1");
+  file2.open("weibull_2_0.2");
+  file3.open("weibull_1.5_1");
+
+  for (int i = 0; i < 100000; i++) {
+    file1 << rg.Weibull(5, 1) << std::endl;
+    file2 << rg.Weibull(2, 0.2) << std::endl;
+    file3 << rg.Weibull(1.5, 1) << std::endl;
+  }
+
+  file1.close();
+  file2.close();
+  file3.close();
+
 /*  for (int i = 0; i < 10; i++)
     std::cout<< rg.Uniform(1,100) <<std::endl;
   std::cout<<std::endl;*/
