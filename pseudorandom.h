@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <limits>
 
 #include "mtwister.h"
 
@@ -63,15 +64,8 @@ double
 RandomGenerator<UniformGenerator>::Weibull(double shape, double scale)
 {   
   if (!shape || !scale) 
-    return -1.;// NaN; TODO
-  double random_number = this->Random_real3(); // interval (0,1)
-  if (!random_number) {
-    if (shape > 1)
-      return 0;
-    /*if (shape < 1) TODO
-      return +Inf;*/
-  }
-  return scale * std::pow(-1.* std::log(random_number), 1./ shape);
+    return std::numeric_limits<double>::quiet_NaN();// NaN
+  return scale * std::pow(-std::log(this->Random_real3()), 1./ shape);
 }
 
 template <class UniformGenerator>
