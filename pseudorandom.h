@@ -199,7 +199,8 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
 /* Parameters: Shape alpha and scale beta */
 template <class UniformGenerator>
 double 
-RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta) {
+RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta) 
+{
   double oalpha, a1, a2;
   oalpha = alpha;
   if (alpha <= 0 || beta <= 0) {
@@ -211,8 +212,7 @@ RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta) {
   }
   a1 = alpha-1./3.;
   a2 = 1./sqrt(9.*a1);
-
-  /*Return a gamma deviate by the method of Marsaglia and Tsang.*/
+  /* Return a gamma deviate by the method of Marsaglia and Tsang. */
   double u,v,x;
   do {
     do {
@@ -222,7 +222,7 @@ RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta) {
     v = v*v*v;
     u = this->Random_real1();
   } while (u > (1. - 0.331 * x * x * x * x) &&
-      log(u) > 0.5 * x * x + a1*(1.-v+log(v))); //Rarely evaluated.
+           log(u) > 0.5 * x * x + a1*(1.-v+log(v))); // Rarely evaluated.
   if (alpha == oalpha) {
     return a1*v/beta;
   }
