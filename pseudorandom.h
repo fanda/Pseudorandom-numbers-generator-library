@@ -1,6 +1,6 @@
 /*
- * Soubor:  mtwister.
- * Datum:   19.11.2010
+ * Soubor:  pseudorandom.h
+ * Datum:   12.12.2010
  * Autori:  Pavel Novotny, xnovot28@stud.fit.vutbr.cz
  *          Ota Pavelek, xpavel08@stud.fit.vutbr.cz
  * Projekt: Knihovna pro generovani pseudonahodnych cisel
