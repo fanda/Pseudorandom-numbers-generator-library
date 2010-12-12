@@ -1,0 +1,18 @@
+#skript pro gnuplot zpracovavajici gama rozlozeni
+#z vystupu testovaciho programu vykresli histogramy, k histogramum dokresli analyticke reseni
+
+#nastaveni parametru obrazku
+set term png size 1024, 768;
+
+#funkce pro kresleni histogramu, x se dosazuje hodnota ze souboru, size je sirka histogramu
+hist(x,size) = floor(1.0*x/size)*size
+
+
+#kresleni exponencialniho rozlozeni
+uniform(x,a,b)=x<(a<b?a:b)||x>=(a>b?a:b)?0.0:1.0/abs(b-a)
+set output "tests/graphs/uniform(10, 20).png";
+plot [9:21] uniform(x, 10, 20), 'tests/generated/uniform_10_20' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'Histogram'
+set output "tests/graphs/uniform(-11.5, 0).png";
+plot [-12:1] uniform(x, -11.5, 0), 'tests/generated/uniform_-11.5_0' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'Histogram'
+set output "tests/graphs/uniform_-5_3.7.png";
+plot [-6:5] uniform(x, -5, 3.7), 'tests/generated/uniform_-5_3.7' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'Histogram'

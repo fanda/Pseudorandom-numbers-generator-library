@@ -1,0 +1,19 @@
+#skript pro gnuplot zpracovavajici Poissonovo rozlozeni
+#z vystupu testovaciho programu vykresli histogramy, k histogramum dokresli analyticke reseni
+
+#nastaveni parametru obrazku
+set term png size 1024, 768;
+
+#funkce pro kresleni histogramu, x se dosazuje hodnota ze souboru, size je sirka histogramu
+hist(x,size) = floor(1.0*x/size)*size
+
+#vykresleni poissonova rozlozeni
+isint(x)=(int(x)==x)
+poisson(x,mu)=mu<=0?1/0:!isint(x)?1/0:x<0?0.0:exp(x*log(mu)-lgamma(x+1)-mu)
+set output "tests/graphs/poisson(4).png";
+plot [-1:12] [0:0.3] 'gnuplot_scripts/intNumbers' u (poisson($1, 4)) with impulses, 'tests/generated/poisson_4' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'Histogram'
+set output "tests/graphs/poisson(1).png";
+plot [-1:10] [0:0.5] 'gnuplot_scripts/intNumbers' u (poisson($1, 1)) with impulses, 'tests/generated/poisson_1' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'Histogram'
+set output "tests/graphs/poisson(10).png";
+plot [-1:20] [0:0.3] 'gnuplot_scripts/intNumbers' u (poisson($1, 10)) with impulses, 'tests/generated/poisson_10' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'Histogram'
+

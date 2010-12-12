@@ -1,0 +1,17 @@
+#skript pro gnuplot zpracovavajici exponencialni rozlozeni
+#z vystupu testovaciho programu vykresli histogramy, k histogramum dokresli analyticke reseni
+
+#nastaveni parametru obrazku
+set term png size 1024, 768;
+
+#funkce pro kresleni histogramu, x se dosazuje hodnota ze souboru, size je sirka histogramu
+hist(x,size) = floor(1.0*x/size)*size
+
+#kresleni exponencialniho rozlozeni
+exponential(x,lambda)=lambda<=0?1/0:x<0?0.0:lambda*exp(-lambda*x)
+set output "tests/graphs/exponential(3).png";
+plot [0:3] exponential(x, 3), 'tests/generated/exponential_3' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'Histogram'
+set output "tests/graphs/exponential(1.5).png";
+plot [0:4] exponential(x, 1.5), 'tests/generated/exponential_1.5' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'Histogram'
+set output "tests/graphs/exponential(1).png";
+plot [0:5] exponential(x, 1), 'tests/generated/exponential_1' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'Histogram'
