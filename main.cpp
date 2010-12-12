@@ -106,12 +106,6 @@ int main(int argc, char *argv[])
   
   std::ofstream file;
 
-  //vytvoreni adresaru do kterych se budou ukladat vysledky
-  //pri chybe nic nevypisuje!
-  system("mkdir -p tests");
-  system("mkdir -p tests/generated");
-  system("mkdir -p tests/graphs");
-
   //zpracovani exponencialniho rozlozeni
   if (exponential == true) {
     file.open("tests/generated/exponential_3");
