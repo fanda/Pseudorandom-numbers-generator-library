@@ -1,19 +1,34 @@
+/*
+ * Soubor:  mtwister.
+ * Datum:   19.11.2010
+ * Autori:  Pavel Novotny, xnovot28@stud.fit.vutbr.cz
+ *          Ota Pavelek, xpavel08@stud.fit.vutbr.cz
+ * Projekt: Knihovna pro generovani pseudonahodnych cisel
+ * Popis:   Sablona tridy RandomGenerator prijmajici jako parametr generator
+ *          nahodnych cisel v rovnomernem rozdeleni
+ */
 
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <limits>
 
 #include "mtwister.h"
 
-template <class UniformGenerator>
+
+/** 
+    Template class Random Generator 
+    with parameter inherited from AbstractUniformGenerator (default MT32)     
+**/
+template <class UniformGenerator = MT32>
 class RandomGenerator : public UniformGenerator
 {
 public:
+  /* Constructors & destructors */
   RandomGenerator()         : UniformGenerator(),     old_lambda(-1.) {}  
   RandomGenerator(int seed) : UniformGenerator(seed), old_lambda(-1.) {}
   ~RandomGenerator() {}
 
+  /* Derivation supported by library */
   double Uniform(double min, double max);
   double Exponential(double lambda);
   double Normal(double mi, double sigma);
@@ -28,26 +43,51 @@ private:
 
 };
 
+
+/** 
+    Uniform derivation  <->  Uniform(a,b)
+**/
+/* Parameters: Minimal and maximal boundary od random number */
 template <class UniformGenerator>
 double 
 RandomGenerator<UniformGenerator>::Uniform(double min, double max)
 {
+  if (min >= max) {
+    std::cerr<< "Bad parameter in Uniform distribution" <<std::endl;
+    throw;
+  }
   return (min + (max - min) * this->Random_real1());   
 }
 
 
+/** 
+    Exponential derivation  <->  Exp(lambda)
+**/
+/* Parameter: Rate lambda */
 template <class UniformGenerator>
 double 
 RandomGenerator<UniformGenerator>::Exponential(double lambda)
 {   
+  if (lambda <= 0) {
+    std::cerr<< "Bad parameter in Exponential distribution" <<std::endl;
+    throw;
+  }
   return (-1./ lambda) * std::log(this->Random_real3());
 }
 
 
+/** 
+    Normal derivation  <->  Normal(mu, sigma^2)
+**/
+/* Parameters: Mean mu & squared scale sigma */
 template <class UniformGenerator>
 double 
 RandomGenerator<UniformGenerator>::Normal(double mu, double sigma)
 {
+  if (sigma <= 0) {
+    std::cerr<< "Bad parameter in Normal distribution" <<std::endl;
+    throw;
+  }
   double u, v, x, y, q;
   do {
     u = this->Random_real3();
@@ -59,19 +99,35 @@ RandomGenerator<UniformGenerator>::Normal(double mu, double sigma)
   return mu + sigma * v / u;
 }
 
+
+/** 
+    Weibull derivation  <->  Weibull(k, lambda)
+**/
+/* Parameters: Shape k and scale lambda */
 template <class UniformGenerator>
 double 
 RandomGenerator<UniformGenerator>::Weibull(double shape, double scale)
 {   
-  if (!shape || !scale) 
-    return std::numeric_limits<double>::quiet_NaN();// NaN
+  if (shape <= 0 || scale <= 0) {
+    std::cerr<< "Bad parameter in Weibull distribution" <<std::endl;    
+    throw;
+  }
   return scale * std::pow(-std::log(this->Random_real3()), 1./ shape);
 }
 
+
+/** 
+    Poisson derivation  <->  Poisson(lambda)
+**/
+/* Parameter: Expected number of occurrences lambda */
 template <class UniformGenerator>
 int 
 RandomGenerator<UniformGenerator>::Poisson(double lambda)
 {
+  if (lambda <= 0) {
+    std::cerr<< "Bad parameter in Poisson distribution" <<std::endl;
+    throw;
+  }
   double u, u2, v, v2, p, t, lfac;
   if (old_lambda < 0)
     log_fact.assign(1024, -1.); // precomputed log-factorial
@@ -136,13 +192,19 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
   return k;
 }
 
+
+/** 
+    Gamma derivation  <->  Gamma(a, b)
+**/
+/* Parameters: Shape alpha and scale beta */
 template <class UniformGenerator>
 double 
 RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta) {
   double oalpha, a1, a2;
   oalpha = alpha;
-  if (alpha <= 0.) {
-    throw("bad alpha in Gammadev");
+  if (alpha <= 0 || beta <= 0) {
+    std::cerr<< "Bad parameter in Gamma distribution" <<std::endl;
+    throw;
   }
   if (alpha < 1.) {
     alpha += 1.;
