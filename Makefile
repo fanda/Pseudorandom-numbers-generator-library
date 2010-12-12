@@ -2,11 +2,11 @@
 ifeq ($(OS), Windows_NT)
   LIBS =
   REMOVE = del
-  BIN = prg.exe
+  BIN = test.exe
 else
   LIBS =
   REMOVE = rm -f
-  BIN = prg
+  BIN = test
 endif
 
 CPP  = g++
@@ -45,6 +45,7 @@ main.o: main.cpp
 clean: clear
 clear:
 	$(REMOVE) ~* *.o $(BIN)
+	$(REMOVE)r tests
 
 ################################################################################
 ################################################################################
