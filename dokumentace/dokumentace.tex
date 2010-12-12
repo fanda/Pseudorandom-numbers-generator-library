@@ -1,5 +1,5 @@
 \documentclass[a4paper,11pt]{article}
-\usepackage[utf8]{inputenc}
+\usepackage[utf8x]{inputenc}
 \usepackage[IL2]{fontenc}
 \usepackage{times}
 \usepackage{url}
@@ -12,11 +12,24 @@
 \begin{document}
 \begin{center}
   \Huge
-  Dokumentace k~projektu ISA\\
+  Dokumentace k~projektu IMS\\
+  \Large
+  Implementace knihovny pro generování pseudonáhodných čísel\\
+  \large
+  Autoři: Pavel Novotný (xnovot28), Ota Pavelek (xpavel08)
+
 \end{center}
+\section{Úvod}
+Při simulacích (IMS, slide 8) se často používají náhodné jevy (IMS, slide 76) či procesy, neboť některé části modelů (IMS, slide 7) jsou neurčité nebo je neumíme popsat jinak. Jedná se například o popisy příchodů (např. zákazníků) v systémech hromadné obsluhy (IMS, slide 139), výskytu poruch(IMS, slide 94) nebo katastrof, určení doby obsluhy či doby životnosti nějakého zařízení. Především pro tvorbu simulačních modelů (IMS, slide 46) je tedy potřeba nástroj, který v průběhu simulace zajistí požadovanou náhodnost (IMS, slide 76) a to pokud možno rychle a přesně. Právě takovým nástrojem je zde dokumentovaná knihovna pro generování pseudonáhodných čísel (IMS, slide 100) nabízející tvůrci simulačního modelu na výběr z několika rozložení pravděpodobnosti (IMS, slide 90) výskytu žádané náhody.
 
+Generátor pseudonáhodných čísel je program, jehož výstupem je deterministicky (IMS, slide 31) a efektivně určená posloupnost čísel taková, že je statisticky(IMS, slide 35) k nerozeznání od náhodné posloupnosti čísel \cite{wiki}. Cílem této knihovny je vytvořit implementaci generátoru pseudonáhodných čísel, takže bude snadno použitelná v simulačních modelech nebo jiných náhodnost požadujících programech.
+\subsection{Zdroje faktů}
+Problematika generování náhodnosti je poměrně dobře popsána a to jak samotné generování pseudonáhodných čísel v rovnoměrném rozložení (IMS, slide 92), tak také transformace (IMS, slide 105) z rovnoměrného rozložení do jiných žádaných rozložení.
 
-\cite{RFC2080}
+Co se týče generování pseudonáhodných čísel, byly díky použitému generátoru s názvem Mersenne Twister (IMS, slide 104) hlavním zdrojem informací odborný článek Mersenne Twister: A 623-dimensionally equidistributed uniform pseudorandom number generator \cite{Matsumoto} a osobní stránka jeho tvůrce, profesora Makoto Matsumota [Matsumoto2].
+
+Transformace mezi pravděpodobnostními rozloženími si vyžádaly více faktických zdrojů, ovšem tím stěžejním byla kniha Numerical Recipes [NR], která k tématu poskytla obsáhlé ba až vyčerpávající informace. V některých případech bylo nahlédnuto do odborných vědeckých článků, na něž bude ve vhodnou dobu upozorněno.
+
 \renewcommand{\refname}{Bibliografie}
 \bibliographystyle {czechiso}
 \bibliography {zdroje}
