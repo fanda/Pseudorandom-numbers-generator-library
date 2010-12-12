@@ -199,25 +199,25 @@ int main(int argc, char *argv[])
     }
     file.close();
 
-    file.open("tests/generated/weibull_2_0.2");
+    file.open("tests/generated/weibull_2_3");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
-        file << rg.Weibull(2, 0.2) << endl;
+        file << rg.Weibull(2, 3) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/weibull_2_0.2" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests/generated/weibull_2_3" << endl;
     }
     file.close();
 
-    file.open("tests/generated/weibull_1.5_1");
+    file.open("tests/generated/weibull_1.5_0.2");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
-        file << rg.Weibull(1.5, 1) << endl;
+        file << rg.Weibull(1.5, 0.2) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/weibull_1.5_1" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests/generated/weibull_1.5_0.2" << endl;
     }
     file.close();
 
@@ -287,14 +287,14 @@ int main(int argc, char *argv[])
     }
     file.close();
 
-    file.open("tests/generated/gamma_2_2");
+    file.open("tests/generated/gamma_2_0.8");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
-        file << rg.Gamma(2, 2) << endl;
+        file << rg.Gamma(2, 0.8) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/gamma_2_2" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests/generated/gamma_2_0.8" << endl;
     }
     file.close();
 

@@ -7,13 +7,22 @@ set term png size 1024, 768;
 #funkce pro kresleni histogramu, x se dosazuje hodnota ze souboru, size je sirka histogramu
 hist(x,size) = floor(1.0*x/size)*size
 
+set ylabel "cetnost"
+set xlabel "hodnota vygenerovaneho cisla"
+
 #vykresleni poissonova rozlozeni
 isint(x)=(int(x)==x)
 poisson(x,mu)=mu<=0?1/0:!isint(x)?1/0:x<0?0.0:exp(x*log(mu)-lgamma(x+1)-mu)
+
 set output "tests/graphs/poisson(4).png";
-plot [-1:12] [0:0.3] 'gnuplot_scripts/intNumbers' u (poisson($1, 4)) with impulses, 'tests/generated/poisson_4' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'Histogram'
+set title 'Histogram vygenerovanych hodnot pro rozlozeni Poisson(4)'
+plot [-1:12] [0:0.3] 'gnuplot_scripts/intNumbers' u (poisson($1, 4)) with impulses t 'hustota pravdepodobnosti pro rozlozeni Poisson(4)', 'tests/generated/poisson_4' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'histogram'
+
 set output "tests/graphs/poisson(1).png";
-plot [-1:10] [0:0.5] 'gnuplot_scripts/intNumbers' u (poisson($1, 1)) with impulses, 'tests/generated/poisson_1' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'Histogram'
+set title 'Histogram vygenerovanych hodnot pro rozlozeni Poisson(1)'
+plot [-1:10] [0:0.5] 'gnuplot_scripts/intNumbers' u (poisson($1, 1)) with impulses t 'hustota pravdepodobnosti pro rozlozeni Poisson(1)', 'tests/generated/poisson_1' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'histogram'
+
 set output "tests/graphs/poisson(10).png";
-plot [-1:20] [0:0.3] 'gnuplot_scripts/intNumbers' u (poisson($1, 10)) with impulses, 'tests/generated/poisson_10' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'Histogram'
+set title 'Histogram vygenerovanych hodnot pro rozlozeni Poisson(10)'
+plot [-1:20] [0:0.3] 'gnuplot_scripts/intNumbers' u (poisson($1, 10)) with impulses t 'hustota pravdepodobonosti pro rozlozeni Poisson(10)', 'tests/generated/poisson_10' u (hist($1, .1)):(0.00001) smooth frequency w boxes t 'histogram'
 

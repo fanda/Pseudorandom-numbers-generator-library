@@ -7,12 +7,21 @@ set term png size 1024, 768;
 #funkce pro kresleni histogramu, x se dosazuje hodnota ze souboru, size je sirka histogramu
 hist(x,size) = floor(1.0*x/size)*size
 
+set ylabel "cetnost"
+set xlabel "hodnota vygenerovaneho cisla"
+
 #kresleni normalniho rozlozeni
 invsqrt2pi = 0.398942280401433
 normal(x,mi,sigma)=sigma<=0?1/0:invsqrt2pi/sigma*exp(-0.5*((x-mi)/sigma)**2)
+
 set output "tests/graphs/normal(0, 1).png";
-plot [-5:5] normal(x, 0, 1), 'tests/generated/normal_0_1' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'Histogram'
+set title 'Histogram vygenerovanych hodnot pro normalni rozlozeni s parametry mi = 0, sigma^2 = 1'
+plot [-5:5] normal(x, 0, 1) t 'hustota pravdepodobnosti', 'tests/generated/normal_0_1' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
+
 set output "tests/graphs/normal(-2, 0.5).png";
-plot [-5:1] normal(x, -2, 0.5 ** 0.5), 'tests/generated/normal_-2_0.5' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'Histogram'
+set title 'Histogram vygenerovanych hodnot pro normalni rozlozeni s parametry mi = -2, sigma^2 = 0.5'
+plot [-5:1] normal(x, -2, 0.5 ** 0.5) t 'hustota pravdepodobnosti', 'tests/generated/normal_-2_0.5' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
+
 set output "tests/graphs/normal(0, 5).png";
-plot [-7:7] normal(x, 0, 5 ** 0.5), 'tests/generated/normal_0_5' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'Histogram'
+set title 'Histogram vygenerovanych hodnot pro normalni rozlozeni s parametry mi = 0, sigma^2 = 5'
+plot [-7:7] normal(x, 0, 5 ** 0.5) t 'hustota pravdepodobnosti', 'tests/generated/normal_0_5' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'

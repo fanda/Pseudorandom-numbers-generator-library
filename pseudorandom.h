@@ -112,7 +112,7 @@ RandomGenerator<UniformGenerator>::Weibull(double shape, double scale)
     std::cerr<< "Bad parameter in Weibull distribution" <<std::endl;    
     throw;
   }
-  return scale * std::pow(-std::log(this->Random_real3()), 1./ shape);
+  return 1./scale * std::pow(-std::log(this->Random_real3()), 1./ shape);
 }
 
 

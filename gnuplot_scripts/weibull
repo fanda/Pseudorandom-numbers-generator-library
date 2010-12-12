@@ -7,15 +7,19 @@ set term png size 1024, 768;
 #funkce pro kresleni histogramu, x se dosazuje hodnota ze souboru, size je sirka histogramu
 hist(x,size) = floor(1.0*x/size)*size
 
+set ylabel "cetnost"
+set xlabel "hodnota vygenerovaneho cisla"
 
 #kresleni weibullova rozlozeni
 weibull(x,k, lambda)=k<=0||lambda<=0?1/0:  x<0?0.0:x==0?(k>1?0.0:k==1?real(lambda):1/0):  exp(log(k)+k*log(lambda)+(k-1)*log(x)-(lambda*x)**k)
 set output "tests/graphs/weibull(5, 1).png";
-plot [0:2] weibull(x, 5, 1), 'tests/generated/weibull_5_1' u (hist($1, .01)):(0.001) smooth frequency w boxes t 'Histogram'
+set title 'Histogram vygenerovanych hodnot pro rozlozeni Weibull(5, 1)'
+plot [0:2] weibull(x, 5, 1), 'tests/generated/weibull_5_1' u (hist($1, .01)):(0.001) smooth frequency w boxes t 'histogram'
 
-#pro tento pripad knihovna generuje spatne cisla FIXME 
-set output "tests/graphs/weibull(2, 0.2).png";
-plot [0:10] [0:2] weibull(x, 2, 0.2), 'tests/generated/weibull_2_0.2' u (hist($1, .001)):(0.01) smooth frequency w boxes t 'Histogram'
+set output "tests/graphs/weibull(2, 3).png";
+set title 'Histogram vygenerovanych hodnot pro rozlozeni Weibull(2, 3)'
+plot [0:1.2] [0:3] weibull(x, 2, 3), 'tests/generated/weibull_2_3' u (hist($1, .01)):(0.001) smooth frequency w boxes t 'histogram'
 
-set output "tests/graphs/weibull(1.5, 1).png";
-plot [0:2] weibull(x, 1.5, 1), 'tests/generated/weibull_1.5_1' u (hist($1, .01)):(0.001) smooth frequency w boxes t 'Histogram'
+set output "tests/graphs/weibull(1.5, 0.2).png";
+set title 'Histogram vygenerovanych hodnot pro rozlozeni Weibull(1.5, 0.2)'
+plot [0:18] weibull(x, 1.5, 0.2) t 'hustota pravdepodobnosti pro Weibull(1.5, 0.2)', 'tests/generated/weibull_1.5_0.2' u (hist($1, .1)):(0.0001) smooth frequency w boxes t 'histogram'
