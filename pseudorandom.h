@@ -9,7 +9,8 @@ template <class UniformGenerator>
 class RandomGenerator : public UniformGenerator
 {
 public:
-  RandomGenerator(int seed) : UniformGenerator(seed) {}
+  RandomGenerator()         : UniformGenerator(),     old_lambda(-1.) {}  
+  RandomGenerator(int seed) : UniformGenerator(seed), old_lambda(-1.) {}
   ~RandomGenerator() {}
 
   double Uniform(double min, double max);
@@ -18,6 +19,11 @@ public:
   double Weibull(double shape, double scale);
   int    Poisson(double lambda);
   double Gamma(double alpha, double beta);
+
+private:
+  /* Memory for sped up Poisson distribution */
+  double sqr_lambda, log_lambda, exp_lambda, old_lambda;
+  std::vector<double> log_fact;
 
 };
 
@@ -73,13 +79,12 @@ int
 RandomGenerator<UniformGenerator>::Poisson(double lambda)
 {
   double u, u2, v, v2, p, t, lfac;
-  double sqr_lambda, log_lambda, exp_lambda, old_lambda = -1.;
-  std::vector<double> log_fact(2, 1024);
-  log_fact[1] = -1.;
+  if (old_lambda < 0)
+    log_fact.assign(1024, -1.); // precomputed log-factorial
   int k;
   if (lambda < .5) { // use PRODUCT OF UNIFORMS method - Knuth
     if (lambda != old_lambda) 
-      exp_lambda = Exponential(-lambda);
+      exp_lambda = std::exp(-lambda);
     k = -1;
     t = 1.;
     do {
@@ -120,8 +125,7 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
             break;          
         }
       }
-      // do we have precomputed log-factorial?
-      // do we want to use them??? XXX
+      // using precomputed log-factorials or computing them
       if (k < 1024) {
         if (log_fact[k] < 0.)
           log_fact[k] = lgamma(k + 1.);
