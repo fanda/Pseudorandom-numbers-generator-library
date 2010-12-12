@@ -11,7 +11,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-
+#include "lgamma.h"
 #include "mtwister.h"
 
 
