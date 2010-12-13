@@ -14,14 +14,14 @@ set xlabel "hodnota vygenerovaneho cisla"
 #kresleni exponencialniho rozlozeni
 uniform(x,a,b)=x<(a<b?a:b)||x>=(a>b?a:b)?0.0:1.0/abs(b-a)
 
-set output "tests/graphs/uniform(10, 20).png";
+set output "tests_results/graphs/uniform(10, 20).png";
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Uniform(10, 20)'
-plot [9:21] uniform(x, 10, 20) t 'hustota pravdepodobnosti pro Uniform(10, 20)', 'tests/generated/uniform_10_20' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'hisogram'
+plot [9:21] uniform(x, 10, 20) t 'hustota pravdepodobnosti pro Uniform(10, 20)', 'tests_results/generated/uniform_10_20' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'hisogram'
 
-set output "tests/graphs/uniform(-11.5, 0).png";
+set output "tests_results/graphs/uniform(-11.5, 0).png";
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Uniform(-11.5, 0)'
-plot [-12:1] uniform(x, -11.5, 0) t 'hustota pravdepodobnosti pro Uniform(-11.5, 0)', 'tests/generated/uniform_-11.5_0' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
+plot [-12:1] uniform(x, -11.5, 0) t 'hustota pravdepodobnosti pro Uniform(-11.5, 0)', 'tests_results/generated/uniform_-11.5_0' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
 
-set output "tests/graphs/uniform_-5_3.7.png";
+set output "tests_results/graphs/uniform_-5_3.7.png";
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Uniform(-5, 3.7)'
-plot [-6:5] uniform(x, -5, 3.7) t 'hustota pravdepodobnosti pro Uniform(-5, 3.7)', 'tests/generated/uniform_-5_3.7' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
+plot [-6:5] uniform(x, -5, 3.7) t 'hustota pravdepodobnosti pro Uniform(-5, 3.7)', 'tests_results/generated/uniform_-5_3.7' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'

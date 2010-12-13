@@ -108,36 +108,36 @@ int main(int argc, char *argv[])
 
   //zpracovani exponencialniho rozlozeni
   if (exponential == true) {
-    file.open("tests/generated/exponential_3");
+    file.open("tests_results/generated/exponential_3");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Exponential(3) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/exponential_3" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/exponential_3" << endl;
     }
     file.close();
 
-    file.open("tests/generated/exponential_1.5");
+    file.open("tests_results/generated/exponential_1.5");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Exponential(1.5) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/exponential_1.5" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/exponential_1.5" << endl;
     }
     file.close();
 
-    file.open("tests/generated/exponential_1");
+    file.open("tests_results/generated/exponential_1");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Exponential(1) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/exponential_1" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/exponential_1" << endl;
     }
     file.close();
 
@@ -147,36 +147,36 @@ int main(int argc, char *argv[])
 
   //zpracovani normalniho rozlozeni
   if (normal == true) {
-    file.open("tests/generated/normal_0_1");
+    file.open("tests_results/generated/normal_0_1");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Normal(0, 1) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/normal_0_1" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/normal_0_1" << endl;
     }
     file.close();
 
-    file.open("tests/generated/normal_-2_0.5");
+    file.open("tests_results/generated/normal_-2_0.5");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Normal(-2, std::sqrt(0.5)) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/normal_-2_0.5" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/normal_-2_0.5" << endl;
     }
     file.close();
 
-    file.open("tests/generated/normal_0_5");
+    file.open("tests_results/generated/normal_0_5");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Normal(0, std::sqrt(5)) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/normal_0_5" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/normal_0_5" << endl;
     }
     file.close();
 
@@ -186,36 +186,36 @@ int main(int argc, char *argv[])
 
   //zpracovani Weibullova rozlozeni
   if (weibull == true) {
-    file.open("tests/generated/weibull_5_1");
+    file.open("tests_results/generated/weibull_5_1");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Weibull(5, 1) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/weibull_5_1" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/weibull_5_1" << endl;
     }
     file.close();
 
-    file.open("tests/generated/weibull_2_3");
+    file.open("tests_results/generated/weibull_2_3");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Weibull(2, 3) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/weibull_2_3" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/weibull_2_3" << endl;
     }
     file.close();
 
-    file.open("tests/generated/weibull_1.5_0.2");
+    file.open("tests_results/generated/weibull_1.5_0.2");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Weibull(1.5, 0.2) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/weibull_1.5_0.2" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/weibull_1.5_0.2" << endl;
     }
     file.close();
 
@@ -225,67 +225,67 @@ int main(int argc, char *argv[])
 
   //zpracovani Poissonova rozlozeni
   if (poisson == true) {
-    file.open("tests/generated/poisson_1");
+    file.open("tests_results/generated/poisson_1");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Poisson(1) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/poisson_1" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/poisson_1" << endl;
     }
     file.close();
 
-    file.open("tests/generated/poisson_4");
+    file.open("tests_results/generated/poisson_4");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Poisson(4) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/poisson_4" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/poisson_4" << endl;
     }
     file.close();
 
-    file.open("tests/generated/poisson_10");
+    file.open("tests_results/generated/poisson_10");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Poisson(10) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/poisson_10" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/poisson_10" << endl;
     }
     file.close();
 
     system("gnuplot gnuplot_scripts/poisson");
   }
 
-  //zpracovani gama rozlozeni
+  //zpracovani gamma rozlozeni
   if (gamma == true) {
-    file.open("tests/generated/gamma_0.5_1");
+    file.open("tests_results/generated/gamma_0.5_1");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Gamma(0.5, 1) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/gamma_0.5_1" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/gamma_0.5_1" << endl;
     }
     file.close();
 
-    file.open("tests/generated/gamma_6_2");
+    file.open("tests_results/generated/gamma_6_2");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Gamma(6, 2) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/gamma_6_2" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/gamma_6_2" << endl;
     }
     file.close();
 
-    file.open("tests/generated/gamma_2_0.8");
+    file.open("tests_results/generated/gamma_2_0.8");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Gamma(2, 0.8) << endl;
@@ -302,36 +302,36 @@ int main(int argc, char *argv[])
 
   //zpracovani rovnomerneho rozlozeni
   if (uniform == true) {
-    file.open("tests/generated/uniform_10_20");
+    file.open("tests_results/generated/uniform_10_20");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Uniform(10, 20) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/uniform_10_20" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/uniform_10_20" << endl;
     }
     file.close();
 
-    file.open("tests/generated/uniform_-11.5_0");
+    file.open("tests_results/generated/uniform_-11.5_0");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Uniform(-11.5, 0) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/uniform_-11.5_0" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/uniform_-11.5_0" << endl;
     }
     file.close();
 
-    file.open("tests/generated/uniform_-5_3.7");
+    file.open("tests_results/generated/uniform_-5_3.7");
     if (file.good()) {
       for (int i = 0; i < RANDAMOUNT; i++) {
         file << rg.Uniform(-5, 3.7) << endl;
       }
     }
     else {
-      std::cerr << "nepodarilo se otevrit soubor tests/generated/uniform-5_3.7" << endl;
+      std::cerr << "nepodarilo se otevrit soubor tests_results/generated/uniform-5_3.7" << endl;
     }
     file.close();
 

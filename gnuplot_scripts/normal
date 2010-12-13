@@ -14,14 +14,14 @@ set xlabel "hodnota vygenerovaneho cisla"
 invsqrt2pi = 0.398942280401433
 normal(x,mi,sigma)=sigma<=0?1/0:invsqrt2pi/sigma*exp(-0.5*((x-mi)/sigma)**2)
 
-set output "tests/graphs/normal(0, 1).png";
+set output "tests_results/graphs/normal(0, 1).png";
 set title 'Histogram vygenerovanych hodnot pro normalni rozlozeni s parametry mi = 0, sigma^2 = 1'
-plot [-5:5] normal(x, 0, 1) t 'hustota pravdepodobnosti', 'tests/generated/normal_0_1' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
+plot [-5:5] normal(x, 0, 1) t 'hustota pravdepodobnosti', 'tests_results/generated/normal_0_1' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
 
-set output "tests/graphs/normal(-2, 0.5).png";
+set output "tests_results/graphs/normal(-2, 0.5).png";
 set title 'Histogram vygenerovanych hodnot pro normalni rozlozeni s parametry mi = -2, sigma^2 = 0.5'
-plot [-5:1] normal(x, -2, 0.5 ** 0.5) t 'hustota pravdepodobnosti', 'tests/generated/normal_-2_0.5' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
+plot [-5:1] normal(x, -2, 0.5 ** 0.5) t 'hustota pravdepodobnosti', 'tests_results/generated/normal_-2_0.5' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
 
-set output "tests/graphs/normal(0, 5).png";
+set output "tests_results/graphs/normal(0, 5).png";
 set title 'Histogram vygenerovanych hodnot pro normalni rozlozeni s parametry mi = 0, sigma^2 = 5'
-plot [-7:7] normal(x, 0, 5 ** 0.5) t 'hustota pravdepodobnosti', 'tests/generated/normal_0_5' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'
+plot [-7:7] normal(x, 0, 5 ** 0.5) t 'hustota pravdepodobnosti', 'tests_results/generated/normal_0_5' u (hist($1, 0.1)):(0.0001) smooth frequency w boxes t 'histogram'

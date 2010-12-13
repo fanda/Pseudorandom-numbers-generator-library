@@ -12,14 +12,14 @@ set xlabel "hodnota vygenerovaneho cisla"
 
 #kresleni exponencialniho rozlozeni
 exponential(x,lambda)=lambda<=0?1/0:x<0?0.0:lambda*exp(-lambda*x)
-set output "tests/graphs/exponential(3).png";
+set output "tests_results/graphs/exponential(3).png";
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Exponential(3)'
-plot [0:3] exponential(x, 3) t 'hustota pravdepodobnosti Exponential(3)', 'tests/generated/exponential_3' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'histogram'
+plot [0:3] exponential(x, 3) t 'hustota pravdepodobnosti Exponential(3)', 'tests_results/generated/exponential_3' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'histogram'
 
-set output "tests/graphs/exponential(1.5).png";
+set output "tests_results/graphs/exponential(1.5).png";
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Exponential(1.5)'
-plot [0:4] exponential(x, 1.5) t 'hustota pravdepodobnosti Exponential(1.5)', 'tests/generated/exponential_1.5' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'histogram'
+plot [0:4] exponential(x, 1.5) t 'hustota pravdepodobnosti Exponential(1.5)', 'tests_results/generated/exponential_1.5' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'histogram'
 
-set output "tests/graphs/exponential(1).png";
+set output "tests_results/graphs/exponential(1).png";
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Exponential(1)'
-plot [0:5] exponential(x, 1) t 'hustota pravdepodobnosti Exponential(1)', 'tests/generated/exponential_1' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'histogram'
+plot [0:5] exponential(x, 1) t 'hustota pravdepodobnosti Exponential(1)', 'tests_results/generated/exponential_1' u (hist($1, 0.01)):(0.001) smooth frequency w boxes t 'histogram'

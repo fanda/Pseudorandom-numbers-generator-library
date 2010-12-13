@@ -13,14 +13,14 @@ set xlabel "hodnota vygenerovaneho cisla"
 #vykreslovani gama rozlozeni
 gmm(x,rho,lambda)=rho<=0||lambda<=0?1/0:  x<0?0.0:x==0?(rho>1?0.0:rho==1?real(lambda):1/0):  exp(rho*log(lambda)+(rho-1.0)*log(x)-lgamma(rho)-lambda*x)
 
-set output "tests/graphs/gamma(0.5, 1).png"
+set output "tests_results/graphs/gamma(0.5, 1).png"
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Gamma(0.5, 1)'
-plot [0:5] [0:1.5] gmm(x, 0.5, 1) t 'hustota pravdepodobnosti pro Gamma(0.5, 1)', 'tests/generated/gamma_0.5_1' u (hist($1, .1)):(0.0001) smooth frequency w boxes t 'histogram'
+plot [0:5] [0:1.5] gmm(x, 0.5, 1) t 'hustota pravdepodobnosti pro Gamma(0.5, 1)', 'tests_results/generated/gamma_0.5_1' u (hist($1, .1)):(0.0001) smooth frequency w boxes t 'histogram'
 
-set output "tests/graphs/gamma(6, 2).png"
+set output "tests_results/graphs/gamma(6, 2).png"
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Gamma(6, 2)'
-plot [0:7] [0:0.5] gmm(x, 6, 2) t 'hustota pravdepodobnosti pro Gamma(6, 2)', 'tests/generated/gamma_6_2' u (hist($1, .1)):(0.0001) smooth frequency w boxes t 'histogram'
+plot [0:7] [0:0.5] gmm(x, 6, 2) t 'hustota pravdepodobnosti pro Gamma(6, 2)', 'tests_results/generated/gamma_6_2' u (hist($1, .1)):(0.0001) smooth frequency w boxes t 'histogram'
 
-set output "tests/graphs/gamma(2, 0.8).png"
+set output "tests_results/graphs/gamma(2, 0.8).png"
 set title 'Histogram vygenerovanych hodnot pro rozlozeni Gamma(2, 0.8)'
-plot [0:14] [0:0.5] gmm(x, 2, 0.8) t 'hustota pravdepodobnosti pro Gamma(2, 0.8)', 'tests/generated/gamma_2_0.8' u (hist($1, .1)):(0.0001) smooth frequency w boxes t 'histogram'
+plot [0:14] [0:0.5] gmm(x, 2, 0.8) t 'hustota pravdepodobnosti pro Gamma(2, 0.8)', 'tests_results/generated/gamma_2_0.8' u (hist($1, .1)):(0.0001) smooth frequency w boxes t 'histogram'
