@@ -1,0 +1,30 @@
+Projekt predmetu IMS
+Knihovna pro generovani pseudonahodnych cisel
+Pavel Novotny a Ota Pavelek, FIT VUT v Brne, Prosinec 2010
+
+Soubory knihovny:
+  abstract_uniform_generator.h
+  lgamma.h
+  mtwister.h
+  pseudorandom.h
+
+Soubory testovaciho programu:
+  main.cpp
+
+Adresare:
+  gnuplot_scripts           -> skripty pro vytvareni histogramu
+  tests_results             -> vysledky testu
+  tests_results/generated   -> soubory s vygenerovanymi hodnotami
+  tests_results/graphs      -> histogramy a grafy
+_____________________________
+Kompilace a spusteni programu
+  make
+  make run                  
+
+____________________________
+Cinnost testovaciho programu
+  Program vygeneruje sadu souboru s testovacimi hodnotami do adresare
+  tests_results/generated a k nim odpovidajici obrazky s histogramy prolozenymi
+  analytickym vyjadrenim prislusne funkce hustoty pravdepodobnosti.
+  Pro uspesne vytvoreni obrazku je nutne mit program "gnuplot".
+
