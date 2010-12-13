@@ -20,7 +20,6 @@ _____________________________
 Kompilace a spusteni programu
   make
   make run                  
-
 ____________________________
 Cinnost testovaciho programu
   Program vygeneruje sadu souboru s testovacimi hodnotami do adresare
