@@ -1,15 +1,11 @@
+################################################################################
+# Makefile projektu Generator pseudonahodnych cisel
+# Pavel Novotny a Ota Pavelek, FIT VUT v Brne, Prosinec 2010
 
-ifeq ($(OS), Windows_NT)
-  LIBS =
-  REMOVE = del
-  BIN = test.exe
-  EXEC = $(BIN)
-else
-  LIBS =
-  REMOVE = rm -f
-  BIN = test
-  EXEC = ./$(BIN)
-endif
+LIBS =
+REMOVE = rm -f
+BIN = test
+EXEC = ./$(BIN)
 
 CPP  = g++
 
