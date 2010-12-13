@@ -3,10 +3,12 @@ ifeq ($(OS), Windows_NT)
   LIBS =
   REMOVE = del
   BIN = test.exe
+  EXEC = $(BIN)
 else
   LIBS =
   REMOVE = rm -f
   BIN = test
+  EXEC = ./$(BIN)
 endif
 
 CPP  = g++
@@ -48,4 +50,7 @@ clear:
 	$(REMOVE) tests/generated/* tests/graphs/*
 
 ################################################################################
+# otestovani rozlozeni
+run: 
+	$(EXEC) all
 ################################################################################
