@@ -183,6 +183,13 @@ Transformace z rovnoměrného rozdělení do všech šesti rozdělení pravděpo
 
 Implementace knihovny je kompletně celá umístěna v hlavičkových souborech a to jednak, protože je to nutnou podmínkou při použití šablon, a jednak z pragmatických důvodů proto, aby se uživatel nemusel starat o kompilaci knihovny a mohl ji jednoduše přiložit direktivou include. Ke knihovně je přiložena implementace funkce logaritmus gamma funkce, jež je použita v některých algoritmech pro urychlení výpočtu faktoriálu \cite{NR}. Tato funkce je sice součástí chystaného standardu C++0x jazyka C++, který je na některých platformách již nyní k dispozici ve standardní knihovně funkcí (ač má být oficiálně vydán na až jaře roku 2011) avšak zatím by bez ní knihovna nebyla úplná. V budoucnu, až se standard C++0x rozšíří, jí bude možno z knihovny odstranit.
 
+\begin{figure}[h]
+\begin{center}
+\scalebox{0.4}{\includegraphics{Diagram2.eps}}
+\caption{\label{diagram1}Architektura knihovny}
+\end{center}
+\end{figure}
+
 \section{Testování}
 Pro testování byly použity platformy Unix a MS Windows. Otestované kompilátory jsou následující:
 \begin{itemize}
