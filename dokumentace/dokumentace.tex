@@ -71,12 +71,12 @@ Knihovna pro generování pseudonáhodných čísel využívá objektově orient
 
 Ke splnění uvedených požadavků postačuje použití základních objektově orientovaných principů jako jednoduchá dědičnost a zapouzdření. Obrázek \ref{diagram1} zobrazuje, jak jednoduchá je struktura knihovny pro generování pseudonáhodných čísel. Dvě třídy ve vztahu rodič – potomek, kde rodič je libovolný generátor pseudonáhodných čísel v rovnoměrném rozdělení a potomek generátor rozdělení z něho transformovaných. Použitá dědičnost je jednoduchá, použitá k účelu snadné záměny rodiče bez nutnosti změn v potomku a všude využívá volání metod časnou vazbou.
 
-\begin{table}[h]
+\begin{figure}[h]
 \begin{center}
 \scalebox{0.4}{\includegraphics{Diagram1.eps}}
 \caption{\label{diagram1}Struktura knihovny}
 \end{center}
-\end{table}
+\end{figure}
 \subsection{Analýza rozdělení}
 
 Nyní budou podrobněji rozebrána jednotlivá rozdělení pravděpodobnosti. Popis každého z nich zahrnuje informace obecného rázu, způsob značení, jak se může objevit v literatuře nebo v abstraktním modelu [IMS, slide 10] a příklady využití rozdělení v oblasti modelování a simulací. K tomu jsou uvedeny konkrétní postupy výpočtů tak, jak je implementuje knihovna. 
@@ -84,7 +84,7 @@ Nyní budou podrobněji rozebrána jednotlivá rozdělení pravděpodobnosti. Po
 \subsubsection{Rovnoměrné rozdělení}
 Rovnoměrné rozdělení [IMS, slide 92] je takové rozdělení, kdy náhodná veličina [IMS, slide 78] X nabývá se stejnou pravděpodobností, jakoukoliv hodnotu z intervalu $<a, b>$ \cite{INM}. Pokud jsou hodnoty $a = 0$ a $b = 1$, mluvíme o normované formě rovnoměrného rozdělení a takové rozdělení je základem pro generování dalších rozdělení [IMS, slide 92]. Rozdělení můžeme vyjádřit diskrétně i spojitě, avšak zde uvažujeme pouze vyjádření spojité.
 
-Označení: R(a,b) nebo Uniform(a,b)
+Označení: $R(a,b)$ nebo $Uniform(a,b)$.
 
 V modelování a simulacích je toto rozdělení důležité zejména z hlediska generování náhodných čísel, která jsou dále transformována na jiná rozložení. Při modelování se použije například pro doby čekání nebo doby různých činností.
 
@@ -92,13 +92,15 @@ Rovnoměrné rozdělení poskytuje knihovna jako výchozí rozdělení, avšak v
 \begin{eqnarray}\label{inverzniUniform}
 x = a + u * (b-a)
 \end{eqnarray}
-což je výsledná inverzní funkce $$x=F^{-1}(u)$$ Jinými slovy máme-li náhodné číslo u náležící do intervalu $<0, 1>$, potom funkce \ref{inverzniUniform} jej převede na náhodné číslo x z intervalu $<a, b>$.
+což je výsledná inverzní funkce $$x=F^{-1}(u)$$ Jinými slovy máme-li náhodné číslo $u \in <0, 1>$, potom funkce \ref{inverzniUniform} jej převede na náhodné číslo $x \in <a, b>$.
 
 \subsubsection{Normální rozdělení}
 
 Normální (též Gaussovo) rozdělení je nejdůležitějším spojitým rozdělením \cite{INM}, slide 60]. Využívá se ve statistice (chyby měření) a při aproximaci mnoha jiných, spojitých i diskrétních, rozdělení. Množství náhodných veličin v různých odvětvích vědy a techniky má normální rozdělení. Graf hustoty pravděpodobnosti tohoto rozdělení nese vlastní název Gaussova křivka; ta je specifická tím, že je souměrná podle osy $x \equiv \mu$ a v bodě $x = \mu$ má maximum.
 
-Jeho parametry jsou též jeho charakteristikami, přičemž střední hodnota $$E(X) = \mu$$ a rozptyl $$D(X) = \sigma^2$$Podobně jako u rovnoměrného rozdělení, pokud parametry nabývají hodnot $\mu = 0$ a $\sigma=1$, mluvíme o normované (též standardizované) formě normálního rozdělení. \cite{INM}
+Jeho parametry jsou též jeho charakteristikami, přičemž střední hodnota  $E(X) = \mu$ a rozptyl $D(X) = \sigma^2$.
+
+Podobně jako u rovnoměrného rozdělení, pokud parametry nabývají hodnot $\mu = 0$ a $\sigma=1$, mluvíme o normované (též standardizované) formě normálního rozdělení. \cite{INM}
 
 Označení: $N(\mu, \sigma)$
 
@@ -110,7 +112,7 @@ Pro výpočet normálního rozdělení je v knihovně použita transformační m
 
 Exponenciální rozdělení je spojité rozdělení modelující situace, kdy opakovaně a nezávisle dochází k výskytu náhodné události a zároveň nenastane více těchto situací najednou \cite{INM}. Rozdělení má vhodné vlastnosti pro upotřebení v teorii spolehlivosti \cite{IASTAT}.
 
-Střední hodnota $$E(X) = \frac{1}{\lambda}$$ rozptyl $$D(X)  =\frac{1}{\lambda^2}$$
+Střední hodnota $E(X) = \frac{1}{\lambda}$ rozptyl $D(X)  =\frac{1}{\lambda^2}$.
 
 Označení: $E(\lambda)$ nebo $Exp(\lambda)$ \cite{INM}.
 
@@ -139,7 +141,7 @@ POZN.: Knihovna pro generování pseudonáhodných čísel i tento dokument pou�
 
 Weibullovo rozdělení popisuje takovou náhodnou veličinu X, která vyjadřuje čekání na událost, jež se může může dostavit s šancí úměrnou mocninné funkci dosud pročekané doby [INM, slide 58]. Používá se všude tam, kde nevyhovuje „rozdělení bez paměti“, tedy exponenciální \cite{IASTAT} \cite{HOMEN}. V praxi se jedná o zařízení, kde se projevuje mechanické opotřebení nebo únava materiálu \cite{HOMEN}. Toto spojité rozložení má dva kladné parametry, které se nazývají měřítko a tvar (forma) \cite{Toupal} \cite{INM}. Pokud je tvar $>$ 1, je charakterizováno zařízení, u kterého se pravděpodobnost poruchy zvyšuje, naopak pro tvar $<$ 1 se pravděpodobnost poruchy snižuje. Je-li tvar = 1, jedná se o exponenciální rozdělení \cite{Toupal}.
 
-Označení: W(tvar, měřítko), Wb(tvar, měřítko) nebo Weibull(tvar, měřítko).
+Označení: $W(tvar, měřítko)$, $Wb(tvar, měřítko)$ nebo $Weibull(tvar, měřítko)$.
 
 Při modelování spolehlivosti či selhání například výrobního zařízení se uplatní Weibullovo rozdělení před exponenciálním. Díky simulacím pak lze usnadnit rozhodování, zda se má modelované zařízení nahradit dříve než selže. Dle \cite{Toupal} se využívá i k prezentování výrobních a dodacích časů v průmyslu nebo k předpovědím počasí.
 
@@ -148,24 +150,24 @@ Distribuční funkce Weibullova a exponenciálního rozdělení si jsou dost pod
 Řekněme, že $u \in Uniform(0,1)$ a $u = F(x)$, takže po úpravách získáme nejprve 
 $$\left(\frac{x}{\beta}\right)^\alpha = -ln(1-u)$$ 
 a poté 
-$$x = beta * [-ln(1-u)]^{\frac{1}{\alpha}}.$$ 
+$$x = \beta * [-ln(1-u)]^{\frac{1}{\alpha}}.$$ 
 Podobně jako bylo odstraněno odčítání v argumentu logaritmu u exponenciálního rozdělení, jde odstranit i zde.
 
 \subsubsection{Gamma rozdělení}
 
 Spojité rozdělení, které podobně jako rozdělení Weibullovo má dva parametry pojmenované tvar a měřítko. Odpovídá době čekání na n-tou událost, kde n je parametr tvar. Pro celočíselný tvar přechází na Erlangovo rozdělení \cite{Wiki2}, pro tvar = 1 se stává exponenciálním rozdělením \cite{Wgamma}. V kombinaci s Poissonovým rozdělením tvoří negativní binomické rozdělení. Využití tohoto rozdělení najdeme (kromě modelování a simulací) ve statistice a meteorologii. \cite{Wiki2}
 
-Označení: Gamma(k, $\Pi)$ nebo $\Gamma(k,  \Pi)$.
+Označení: $Gamma(k, \Pi)$ nebo $\Gamma(k,  \Pi)$.
 
 Využití v simulacích je možné pro modely života (umírání) \cite{Wgamma} \cite{Wiki2} nebo také tam, kde nachází uplatnění Erlangovo rozdělení, tedy modelování příchodů, dob čekání nebo u compartment models (česky snad „členěné modely“).
 
-V \cite{NR} jsou uvedené dvě metody transformace a to pro pro různé hodnoty parametru k (tvar). Pro $k < 1$ je využito vztahu $$y*u^{\frac{1}{k}} \equiv \Gamma(k, 1), \text{kde } y \equiv \Gamma(k+1, 1) \text{ a } u \equiv Uniform(0, 1) \text{\cite{NR}}.$$ Pro $k > 1$ je použita upravená verze vylučovací metody, kterou vytvořili Marsaglia a Tsang a která využívá Gaussovu křivku, takže její rychlost závisí na rychlosti počítání nejen rovnoměrného ale i normálního rozdělení. Jelikož je metoda poměrně složitá a její výklad by zabral několikero stran, uvádíme pouze informační zdroj, jímž je \cite{Marsaglia}. 
+V \cite{NR} jsou uvedené dvě metody transformace a to pro pro různé hodnoty parametru k (tvar). Pro $k < 1$ je využito vztahu $$y*u^{\frac{1}{k}} \sim \Gamma(k, 1), \text{kde } y \sim \Gamma(k+1, 1) \text{ a } u \sim Uniform(0, 1) \text{\cite{NR}}.$$ Pro $k > 1$ je použita upravená verze vylučovací metody, kterou vytvořili Marsaglia a Tsang a která využívá Gaussovu křivku, takže její rychlost závisí na rychlosti počítání nejen rovnoměrného ale i normálního rozdělení. Jelikož je metoda poměrně složitá a její výklad by zabral několikero stran, uvádíme pouze informační zdroj, jímž je \cite{Marsaglia}. 
 
 \subsubsection{Poissonovo rozdělení}
 
 Poissonovo rozdělení je jediné diskrétní rozdělení v knihovně pro generování pseudonáhodných čísel. Úzce souvisí s exponenciálním rozdělením, které popisuje dobu mezi dvěma událostmi, zatímco Poissonovo počet výskytů události za určitou dobu \cite{INM}. Použijeme-li parametr rozdělení $\lambda$, který zároveň představuje střední hodnotu i rozptyl, můžeme tvrdit, že k výskytu události dochází průměrně jednou za $\frac{1}{\lambda}$ časových jednotek, tj. $\lambda$-krát za jednu časovou jednotku \cite{INM}. Pomocí Poissonova rozdělení jde za určitých podmínek aproximovat binomické rozdělení \cite{INM} a existuje také vztah pro převod na rozdělení exponenciální.
 
-Označení: P($\lambda$) nebo Poisson($\lambda$)
+Označení: $P(\lambda)$ nebo $Poisson(\lambda)$
 
 Poissonovo rozdělení je pro modelování a simulace důležité podobně jako jeho exponenciální protějšek. Modeluje se s ním počet příchodů za jednotku času v systémech hromadné obsluhy nebo obecně počty jakýchkoliv jevů vyskytujících se v určitém časovém kvantu [IMS, slide 91]. 
 
