@@ -43,7 +43,7 @@ main.o: main.cpp
 clean: clear
 clear:
 	$(REMOVE) ~* *.o $(BIN)
-	$(REMOVE) tests/generated/* tests/graphs/*
+	$(REMOVE) tests_results/generated/* tests_results/graphs/*
 
 ################################################################################
 # otestovani rozlozeni
