@@ -1,10 +1,26 @@
 /*
- * Soubor:  mtwister.
- * Datum:   19.11.2010
- * Autori:  Pavel Novotny, xnovot28@stud.fit.vutbr.cz
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/*
+ * File:    mtwister.h
+ * Date:    19.11.2010
+ * Authors: Pavel Novotny, fandisek@gmail.com
  *          Ota Pavelek, xpavel08@stud.fit.vutbr.cz
- * Projekt: Knihovna pro generovani pseudonahodnych cisel
- * Popis:   Generator pseudonahodnych cisel Mersenne twister
+ * Project: Pseudorandom number generator library
+ * About:   Mersenne twister uniform generator
  */
 
 #include "abstract_uniform_generator.h"
@@ -47,12 +63,12 @@ public:
     MT32(unsigned long * init_vector, int size) { seed(init_vector, size); }
     ~MT32() {}
 
-    void seed(int seed);    
+    void seed(int seed);
     void seed(unsigned long * init_vector, int size);
 
     /* Generates 32 bit random integer */
-    inline unsigned long Random() 
-    { 
+    inline unsigned long Random()
+    {
       if (position >= n) {
         for (int i = 0; i < (n-m); i++)
           state[i] = state[i+m] ^ twiddle(state[i], state[i+1]);
@@ -70,31 +86,31 @@ public:
     }
 
     /* Random number on [0,1]-real-interval */
-    inline double Random_real1() 
+    inline double Random_real1()
     {
       return static_cast<double>(Random()) * (1. / DOUB_ULONG_MAX);
     }
 
     /* Random number on [0,1)-real-interval */
-    inline double Random_real2() 
+    inline double Random_real2()
     {
       return static_cast<double>(Random()) * (1. / DOUB_ULONG_MAX_PP);
     }
 
     /* Random number on (0,1)-real-interval */
-    inline double Random_real3() 
+    inline double Random_real3()
     {
       return static_cast<double>(Random() + 0.5) * (1. / DOUB_ULONG_MAX_PP);
     }
 
-private:   
+private:
     static const int n = N, m = M;
     static unsigned long state[N];
     static int position;
     static bool init;
 
     /* Helps to have nicer code */
-    inline unsigned long twiddle(unsigned long u, unsigned long v) 
+    inline unsigned long twiddle(unsigned long u, unsigned long v)
     {
       return (((u & UPPER_MASK)|(v & LOWER_MASK)) >> 1)^((v & 1UL) * VECTOR);
       /* Look at  (v & 1UL) * VECTOR  which sped this up against
@@ -108,7 +124,7 @@ int MT32::position = 0;
 bool MT32::init = false;
 
 
-/* Seed method used when instance is being created or 
+/* Seed method used when instance is being created or
    when user wants to change it                        */
 void MT32::seed(int s)
 {
@@ -119,27 +135,27 @@ void MT32::seed(int s)
   }
   position = n;
 }
-   
-/* Array seed method used when instance is being created or 
-   when user wants to change it                             */ 
-void MT32::seed(unsigned long * init_vector, int size) 
+
+/* Array seed method used when instance is being created or
+   when user wants to change it                             */
+void MT32::seed(unsigned long * init_vector, int size)
 {
-  int i = 1, 
-      j = 0, 
+  int i = 1,
+      j = 0,
       k = n > size ? n : size;
   seed(19650218UL);
   for (; k != 0; k--) {
     state[i] = init_vector[j] + j + (
-      state[i] ^ ( ( state[i - 1] ^ (state[i - 1] >> 30) ) * 1664525UL) 
+      state[i] ^ ( ( state[i - 1] ^ (state[i - 1] >> 30) ) * 1664525UL)
     );
     state[i] &= BITS_32_MASK;
-    i++; 
+    i++;
     if (i >= n) {
       state[0] = state[n - 1];
       i = 1;
     }
     j++;
-    if (j >= size) 
+    if (j >= size)
       j = 0;
   }
   for (k = n - 1; k != 0; k--) {
@@ -154,5 +170,5 @@ void MT32::seed(unsigned long * init_vector, int size)
     }
   }
   state[0] = UPPER_MASK;
-  position = n;      
+  position = n;
 }

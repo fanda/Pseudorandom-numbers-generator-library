@@ -1,10 +1,26 @@
 /*
- * Soubor:  lgamma.h
- * Datum:   12.12.2010
- * Autori:  Pavel Novotny, xnovot28@stud.fit.vutbr.cz
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/*
+ * File:    lgamma.h
+ * Date:    12.12.2010
+ * Authors: Pavel Novotny, fandisek@gmail.com
  *          Ota Pavelek, xpavel08@stud.fit.vutbr.cz
- * Projekt: Knihovna pro generovani pseudonahodnych cisel
- * Popis:   Funkce logaritmus funkce gamma
+ * Project: Pseudorandom number generator library
+ * About:   Function logarithm gamma
  */
 
 #include <iostream>
@@ -29,7 +45,7 @@ lgamma(double xx)
   tmp = x + 5.24218750000000000;
   tmp = (x + 0.5) * log(tmp) - tmp;
   ser = 0.999999999999997092;
-  for (j = 0; j < 14; j++) 
+  for (j = 0; j < 14; j++)
     ser += cof[j] / ++y;
   return tmp + log(2.5066282746310005 * ser / x);
 }

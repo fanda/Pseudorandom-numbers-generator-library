@@ -102,8 +102,8 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  RandomGenerator<MT32> rg((unsigned long)time(NULL));
-  
+  RandomGenerator<CA> rg((unsigned long)time(NULL));
+
   std::ofstream file;
 
   //zpracovani exponencialniho rozlozeni

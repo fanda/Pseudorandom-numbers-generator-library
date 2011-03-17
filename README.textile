@@ -11,3 +11,21 @@ h1. Using
 # Include _pseudorandom.h_ in Your project
 # Create generator object: RandomGenerator<MT32> rg((unsigned long)time(NULL));
 # Use: double exp = rg.Exponential(3);
+
+h1. Generators of uniform distributions
+
+* Mersenne Twister
+* Cellular automaton based generator
+
+h2. About cellular automaton based generator
+
+Anthony Pasqualoni created very good pseudorandom generator for number in
+uniform distribution using 256-state cellular automaton
+More information including tests and comparation with other generators (mt19937,
+taus etc.) can be found at http://home.southernct.edu/~pasqualonia1/ca/report.html
+
+h2. Uniform generator change
+
+Just pass class as teplate argument while creating RandomGenerator object.
+RandomGenerator<MT32> rg((unsigned long)time(NULL));
+RandomGenerator<CA>   rg((unsigned long)time(NULL));

@@ -1,0 +1,1552 @@
+#LyX file created by tex2lyx 1.6.5
+\lyxformat 264
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{times}\DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>}\urlstyle{tt}}\usepackage{graphics}\usepackage{picture}\usepackage{epstopdf}
+
+
+\end_preamble
+\language czech
+\inputencoding utf8x
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\paperfontsize 11
+\spacing single
+\papersize a4paper
+\use_geometry false
+\use_amsmath 2
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language czech
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\align center
+
+
+\size giant
+Dokumentace k\InsetSpace ~
+projektu IMS
+\newline
+ 
+\size larger
+Implementace knihovny pro generování pseudonáhodných čísel
+\newline
+ 
+\size large
+Autoři: Pavel Novotný (xnovot28), Ota Pavelek (xpavel08)
+\end_layout
+
+\size default
+
+\begin_layout Section
+
+Úvod
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Při simulacích [IMS, slide 8] se často používají náhodné jevy [IMS, slide 76] či procesy, neboť některé části modelů [IMS, slide 7] jsou neurčité nebo je neumíme popsat jinak. Jedná se například o popisy příchodů (např. zákazníků) v systémech hromadné obsluhy [IMS, slide 139], výskytu poruch[IMS, slide 94] nebo katastrof, určení doby obsluhy či doby životnosti nějakého zařízení. Především pro tvorbu simulačních modelů [IMS, slide 46] je tedy potřeba nástroj, který v průběhu simulace zajistí požadovanou náhodnost [IMS, slide 76] a to pokud možno rychle a přesně. Právě takovým nástrojem je zde dokumentovaná knihovna pro generování pseudonáhodných čísel [IMS, slide 100] nabízející tvůrci simulačního modelu na výběr z několika rozložení pravděpodobnosti [IMS, slide 90] výskytu žádané náhody.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Generátor pseudonáhodných čísel je program, jehož výstupem je deterministicky [IMS, slide 31] a efektivně určená posloupnost čísel taková, že je statisticky [IMS, slide 35] k nerozeznání od náhodné posloupnosti čísel 
+\begin_inset LatexCommand cite
+after ""
+key "wiki"
+
+\end_inset
+
+. Cílem této knihovny je vytvořit implementaci generátoru pseudonáhodných čísel, takže bude snadno použitelná v simulačních modelech nebo jiných náhodnost požadujících programech.
+\end_layout
+
+\size default
+
+\begin_layout Subsection
+
+Zdroje faktů
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Problematika generování náhodnosti je poměrně dobře popsána a to jak samotné generování pseudonáhodných čísel v rovnoměrném rozložení [IMS, slide 92], tak také transformace [IMS, slide 105] z rovnoměrného rozložení do jiných žádaných rozložení.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Co se týče generování pseudonáhodných čísel, byly díky použitému generátoru s názvem Mersenne Twister [IMS, slide 104] hlavním zdrojem informací odborný článek 
+\emph on
+Mersenne Twister: A 623-dimensionally equidistributed uniform pseudorandom number generator
+\emph default
+ 
+\begin_inset LatexCommand cite
+after ""
+key "Matsumoto"
+
+\end_inset
+
+ a osobní stránka jeho tvůrce, profesora Makoto Matsumota 
+\begin_inset LatexCommand cite
+after ""
+key "Matsumoto2"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Transformace mezi pravděpodobnostními rozloženími si vyžádaly více faktických zdrojů, ovšem tím stěžejním byla kniha 
+\emph on
+Numerical Recipes
+\emph default
+ 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+, která k tématu poskytla obsáhlé, ba až vyčerpávající informace. V některých případech bylo nahlédnuto do odborných vědeckých článků, na něž bude ve vhodnou dobu upozorněno.
+\end_layout
+
+\size default
+
+\begin_layout Section
+
+Rozbor tématu a použitých metod
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Jak už mohlo vyplynout z úvodu, dá se knihovna dekomponovat na dva dílčí podproblémy. Jedním z nich je generování pseudonáhodných čísel v rovnoměrném rozdělení pravděpodobnosti, druhým pak transformace rovnoměrného rozdělení pravděpodobnosti na jiná rozdělení. Zmíněnou dekompozici bude sledovat i struktura této kapitoly.
+\end_layout
+
+\size default
+
+\begin_layout Subsection
+
+Generování čísel v rovnoměrném rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+V teorii modelování [IMS, slide 8] na simulací se normalizované rovnoměrné rozdělení bere jako základ pro generování dalších rozdělení [IMS, slide 92]. Dobrá knihovna pro generování pseudonáhodných čísel by tedy měla implementovat zvláště dobře právě generátor pro toto rozdělení, protože na něm závisí i kvalita čísel vygenerovaných pomocí jiných rozdělení pravděpodobnosti. Přitom 
+\emph on
+zvláště dobře
+\emph default
+ implementovaný (či navrhnutý) zde znamená rychlý, s co nejdelší periodou (počet čísel, po kterých se posloupnost začne opakovat) a se statisticky nezávisle generovanou posloupností [IMS, slide 104].
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Algoritmů pro generování pseudonáhodných čísel v rovnoměrném rozdělení je celá řada, avšak ne všechny mají 
+\emph on
+zvláště dobré
+\emph default
+ vlastnosti. V souvislosti se 
+\emph on
+zvláště dobrými
+\emph default
+ algoritmy se v poslední dekádě mluví především o algoritmu Mersenne Twister [IMS, slide 104], známým též jako MT19937 
+\begin_inset LatexCommand cite
+after ""
+key "Matsumoto"
+
+\end_inset
+
+, který nejenže má velmi velkou periodu 
+\begin_inset Formula $2^{19937} – 1$
+\end_inset
+
+, ale je také velmi rychlý a to i v porovnání s výpočetně jednoduchým lineárně kongruentním generátorem [IMS, slide 101] (oproti němu je však paměťově náročnější) 
+\begin_inset LatexCommand cite
+after ""
+key "Matsumoto"
+
+\end_inset
+
+. Přes jistou nevýhodu, kterou je jeho nepoužitelnost pro kryptografické účely (pokud získáme posloupnost určité délky, můžeme odvodit zbytek) 
+\begin_inset LatexCommand cite
+after ""
+key "Matsumoto"
+
+\end_inset
+
+, byl tento algoritmus vybrán, neboť knihovna najde své použití spíše při tvorbě simulačních modelů, kde zmíněný nedostatek nevadí.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Jako alternativa k algoritmu Mersenne Twister se nabízel algoritmus 
+\emph on
+Complimentary-multiply-with-carry
+\emph default
+, od výzkumníka na poli generátorů pseudonáhodných čísel George Marsaglii (též autor tzv. Diehard testů). Jeho algoritmus má větší periodu (
+\begin_inset Formula $2^{131086}$
+\end_inset
+
+), je rychlejší, ale paměťově náročnější 
+\begin_inset LatexCommand cite
+after ""
+key "jomasm"
+
+\end_inset
+
+. Přestože byl vybrán Mersenne Twister (pro lepší dohledatelnost a větší známost), knihovnu lze jednoduše přizpůsobit i pro CMWC algoritmus, o čemž je pojednáno dále.
+\end_layout
+
+\size default
+
+\begin_layout Subsection
+
+Transformace rovnoměrného rozdělení na jiná rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Rozdělení, která knihovna podporuje, jsou následující: rovnoměrné, exponenciální, normální, Weibullovo, Poissonovo a gamma [IMS, slide 90]. Pro různá rozdělení byly použity různé metody transformace z výchozího rovnoměrného rozložení.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Metoda inverzní transformace
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Inverzní transformace [IMS, slide 105] je způsob, jímž se dají náhodná čísla generovat přesně v daném rozdělení 
+\begin_inset LatexCommand cite
+after ""
+key "IMS2"
+
+\end_inset
+
+. Metoda vychází z funkce inverzní k distribuční funkci požadovaného rozdělení, což však znemožňuje použitelnost této metody pro rozdělení, jejichž distribuční funkce [IMS, slide 82] buď nemají inverzní funkci nebo je tato inverzní funkce nevyjádřitelná elementárními funkcemi 
+\begin_inset LatexCommand cite
+after ""
+key "IMS2"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+V knihovně je metoda inverzní transformace použita pro rovnoměrné, exponenciální a Weibullovo rozdělení. Všechna rozdělení mají poměrně jednoduše vyjádřitelnou inverzní funkci k distribuční funkci. Podoba použitých inverzních funkcí daných rozdělení je uvedena dále.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Metoda Ratio-of-Uniforms
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Pro některá rozdělení pravděpodobnosti existuje více způsobů transformace z rovnoměrného rozdělení, avšak ne všechny tyto způsoby jsou dostatečně efektivní. Kinderman a Monahan vytvořili kombinovanou transformační metodu, která je poměrně efektivní, přestože není implementačně složitá 
+\begin_inset LatexCommand cite
+after ""
+key "KM"
+
+\end_inset
+
+. Metoda Ratio-of-Uniforms (česky snad „poměr rovnoměrných“) vychází z metody vylučovací [IMS, slide 105], ze které přebírá princip nacházení takových dvou náhodných rovnoměrně rozdělených čísel, že leží uvnitř specifického dvourozměrného tvaru. Z těchto dvou čísel je pak náhodné číslo cílového rozdělení vytvořeno výpočtem poměru původních dvou 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+. Důkaz platnosti metody je podán v 
+\begin_inset LatexCommand cite
+after ""
+key "KM"
+
+\end_inset
+
+ i 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+. Metoda byla použita pro generování náhodných čísel v normálním a v Poissonově rozdělení.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Co se týče normálního (Gaussova) rozdělení, byla použita implementace algoritmu, který vytvořil a v článku 
+\emph on
+A Fast Normal Random Number Generator
+\emph default
+ publikoval Joseph L. Leva 
+\begin_inset LatexCommand cite
+after ""
+key "Leva"
+
+\end_inset
+
+. Ten výpočetně optimalizoval metodu Ratio-of-Uniforms tak, že minimalizoval potřebný počet výpočtů logaritmu, přičemž nabízí i srovnání s dalšími algoritmy 
+\begin_inset LatexCommand cite
+after ""
+key "Leva"
+
+\end_inset
+
+. Algoritmus od Leva je přesný a rychlý, takže při výběru metody nevzniklo žádné dilema. Alternativně by mohla být použita jedna z variant Box-Miller transformační metody.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Poissonovo rozdělení je jediné diskrétní rozdělení [IMS, slide 90] v dokumentované knihovně. Kniha 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+ navrhuje a knihovna pro generování pseudonáhodných čísek implementuje dva způsoby generování čísel v Poissonově rozdělení, které se používají v závislosti na střední hodnotě rozdělení. První metodou je zmíněná Ratio-of-Uniforms s řadou výpočetních optimalizací, druhou pak metoda násobící (Multiplication Method) 
+\begin_inset LatexCommand cite
+after ""
+key "AD"
+
+\end_inset
+
+, kterou jako první popsal Donald Knuth ve svém díle 
+\emph on
+The Art of Computer Programming
+\emph default
+, ale která je použitelná pouze pro nízké střední hodnoty 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ (pro ně je výpočet efektivní). Nutno zmínit, že v článku 
+\begin_inset LatexCommand cite
+after ""
+key "AD"
+
+\end_inset
+
+ je nabízena řada dalších alternativních metod pro výpočet včetně jejich srovnání, z něhož vyplývá, že Knuthova metoda je výhodná jen pro střední hodnoty nepřesahující hodnotu 5 
+\begin_inset LatexCommand cite
+after ""
+key "AD"
+
+\end_inset
+
+, tab. P]. Bohužel se zde nevyskytuje srovnání s metodou Ratio-of-Uniforms, avšak ta by dle 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+ měla být rychlá i pro velmi velké střední hodnoty.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Vylučovací metoda
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Vylepšená verze vylučovací metody [IMS, slide 105], jak ji navrhli Marsaglia a Tsang v 
+\begin_inset LatexCommand cite
+after ""
+key "Marsaglia"
+
+\end_inset
+
+ je použita pro generování gamma rozdělení. Základní princip metody spočívá ve vygenerování dvojice náhodných čísel v rovnoměrném rozdělení a testování zda vyhovují funkci hustoty cílového rozdělení [IMS, slide 105]. Pro gamma rozdělení je metoda upravena, přičemž více podrobností je uvedeno dále.
+\end_layout
+
+\size default
+
+\begin_layout Section
+
+Koncepce a analýza
+\end_layout
+
+\size default
+
+\begin_layout Subsection
+
+Návrh programu
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Knihovna pro generování pseudonáhodných čísel využívá objektově orientovaný přístup ve svém návrhu (a posléze i v implementaci). Stanoveným cílem knihovny je dát uživateli možnost vytvořit jeden objekt, který umí generovat náhodnost všech rozdělení, a pokryje pro tyto účely potřeby daného lokálního prostoru, kde bude objekt moci až do svého zničení neustále poskytovat správná čísla. Uživateli však musí být umožněno vytvářet libovolný počet generátorů a to se stejnými i různými inicializačními hodnotami. Pokud bude uživatel knihovny chtít změnit základní generátor čísel v rovnoměrném rozdělení, musí být tato změna pro něj co nejméně náročná.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Ke splnění uvedených požadavků postačuje použití základních objektově orientovaných principů jako jednoduchá dědičnost a zapouzdření. Obrázek 
+\begin_inset LatexCommand ref
+reference "diagram1"
+
+\end_inset
+
+ zobrazuje, jak jednoduchá je struktura knihovny pro generování pseudonáhodných čísel. Dvě třídy ve vztahu rodič – potomek, kde rodič je libovolný generátor pseudonáhodných čísel v rovnoměrném rozdělení a potomek generátor rozdělení z něho transformovaných. Použitá dědičnost je jednoduchá, použitá k účelu snadné záměny rodiče bez nutnosti změn v potomku a všude využívá volání metod časnou vazbou.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+
+\begin_layout Standard
+
+\size large
+
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+
+\size large
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+scalebox{0.4}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics 
+	filename Diagram1.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Caption
+
+\begin_layout Standard
+
+\begin_inset LatexCommand label
+name "diagram1"
+
+\end_inset
+
+Struktura knihovny
+\end_layout
+
+\end_inset
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\size default
+
+\begin_layout Subsection
+
+Analýza rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Nyní budou podrobněji rozebrána jednotlivá rozdělení pravděpodobnosti. Popis každého z nich zahrnuje informace obecného rázu, způsob značení, jak se může objevit v literatuře nebo v abstraktním modelu [IMS, slide 10] a příklady využití rozdělení v oblasti modelování a simulací. K tomu jsou uvedeny konkrétní postupy výpočtů tak, jak je implementuje knihovna.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Rovnoměrné rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Rovnoměrné rozdělení [IMS, slide 92] je takové rozdělení, kdy náhodná veličina [IMS, slide 78] X nabývá se stejnou pravděpodobností, jakoukoliv hodnotu z intervalu 
+\begin_inset Formula $<a, b>$
+\end_inset
+
+ 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+. Pokud jsou hodnoty 
+\begin_inset Formula $a = 0$
+\end_inset
+
+ a 
+\begin_inset Formula $b = 1$
+\end_inset
+
+, mluvíme o normované formě rovnoměrného rozdělení a takové rozdělení je základem pro generování dalších rozdělení [IMS, slide 92]. Rozdělení můžeme vyjádřit diskrétně i spojitě, avšak zde uvažujeme pouze vyjádření spojité.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Označení: 
+\begin_inset Formula $R(a,b)$
+\end_inset
+
+ nebo 
+\begin_inset Formula $Uniform(a,b)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+V modelování a simulacích je toto rozdělení důležité zejména z hlediska generování náhodných čísel, která jsou dále transformována na jiná rozložení. Při modelování se použije například pro doby čekání nebo doby různých činností.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Rovnoměrné rozdělení poskytuje knihovna jako výchozí rozdělení, avšak v normalizované podobě. Pro zobecněnou formu je potřeba použít nějakou transformační metodu, jíž se nabízí metoda inverzní transformace. Distribuční funkce rovnoměrného rozdělení v intervalu 
+\begin_inset Formula $<a, b>$
+\end_inset
+
+ [IMS, slide 92] je 
+\begin_inset Formula \[F(x) = \frac{(x-a)}{(b-a)}\]
+\end_inset
+
+ Vyjdeme-li ze vztahu 
+\begin_inset Formula \[u = F(x), u \in Uniform(0, 1)\]
+\end_inset
+
+pak 
+\begin_inset Formula \[u = \frac{(x-a)}{(b-a)}\]
+\end_inset
+
+ a po jednoduché úpravě dostaneme 
+\begin_inset Formula \begin{eqnarray}\label{inverzniUniform}
+x = a + u * (b-a)
+\end{eqnarray}
+\end_inset
+
+ což je výsledná inverzní funkce 
+\begin_inset Formula \[x=F^{-1}(u)\]
+\end_inset
+
+ Jinými slovy máme-li náhodné číslo 
+\begin_inset Formula $u \in <0, 1>$
+\end_inset
+
+, potom funkce 
+\begin_inset LatexCommand ref
+reference "inverzniUniform"
+
+\end_inset
+
+ jej převede na náhodné číslo 
+\begin_inset Formula $x \in <a, b>$
+\end_inset
+
+.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Normální rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Normální (též Gaussovo) rozdělení je nejdůležitějším spojitým rozdělením 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+, slide 60]. Využívá se ve statistice (chyby měření) a při aproximaci mnoha jiných, spojitých i diskrétních, rozdělení. Množství náhodných veličin v různých odvětvích vědy a techniky má normální rozdělení. Graf hustoty pravděpodobnosti tohoto rozdělení nese vlastní název Gaussova křivka; ta je specifická tím, že je souměrná podle osy 
+\begin_inset Formula $x \equiv \mu$
+\end_inset
+
+ a v bodě 
+\begin_inset Formula $x = \mu$
+\end_inset
+
+ má maximum.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Jeho parametry jsou též jeho charakteristikami, přičemž střední hodnota 
+\begin_inset Formula $E(X) = \mu$
+\end_inset
+
+ a rozptyl 
+\begin_inset Formula $D(X) = \sigma^2$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Podobně jako u rovnoměrného rozdělení, pokud parametry nabývají hodnot 
+\begin_inset Formula $\mu = 0$
+\end_inset
+
+ a 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+, mluvíme o normované (též standardizované) formě normálního rozdělení. 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Označení: 
+\begin_inset Formula $N(\mu, \sigma)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Existuje velká řada jevů (např. jevy s vlivem většího počtu nezávislých faktorů [IMS, slide 96]), které odpovídají normálnímu rozdělení, takže se v simulacích jedná o poměrně častě využívané rozdělení. Také se může vyskytnout při použití metody Monte Carlo [IMS, slide 114] nebo při vyhodnocování výsledků simulací.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Pro výpočet normálního rozdělení je v knihovně použita transformační metoda Ratio-of-Uniforms, jejíž princip byl nastíněn v přecházející kapitole. Několikastránkový popis celého algoritmu je napsán v článku 
+\begin_inset LatexCommand cite
+after ""
+key "Leva"
+
+\end_inset
+
+, kam odkazujeme zájemce o něj.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Exponenciální rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Exponenciální rozdělení je spojité rozdělení modelující situace, kdy opakovaně a nezávisle dochází k výskytu náhodné události a zároveň nenastane více těchto situací najednou 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+. Rozdělení má vhodné vlastnosti pro upotřebení v teorii spolehlivosti 
+\begin_inset LatexCommand cite
+after ""
+key "IASTAT"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Střední hodnota 
+\begin_inset Formula $E(X) = \frac{1}{\lambda}$
+\end_inset
+
+ rozptyl 
+\begin_inset Formula $D(X)  =\frac{1}{\lambda^2}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Označení: 
+\begin_inset Formula $E(\lambda)$
+\end_inset
+
+ nebo 
+\begin_inset Formula $Exp(\lambda)$
+\end_inset
+
+ 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Jedná se o velmi významné rozdělení pro modelování a simulace. V systémech hromadné obsluhy je obvykle využité pro doby mezi příchody do front či pro doby čekání ve frontách. Používá se pro modelování doby čekání na výskyt nějakého jevu, takže dobře popisuje například dobu života zařízení, u kterého dochází k poruše ze zcela náhodných příčin (nikoliv z důsledků opotřebení) 
+\begin_inset LatexCommand cite
+after ""
+key "IASTAT"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Protože existuje inverzní funkce k distribuční funkci exponenciálního rozdělení a je vyjádřitelná pomocí elementárních matematických funkcí, můžeme ji použít pro transformaci z rovnoměrného rozdělení. Distribuční funkce je
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+
+\begin_inset Formula \[
+{F(x)} = \left\{
+\begin{array}{ll}
+ 1 - e ^{-\lambda x} & \quad\text{pro } x \geq 0  \\
+ 0 & \quad\text{pro } x < 0
+\end{array}
+\right.
+\]
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Řekněme, že 
+\begin_inset Formula $u \in Uniform(0,1)$
+\end_inset
+
+ a 
+\begin_inset Formula $u = F(x)$
+\end_inset
+
+. Potom po úpravě 
+\begin_inset Formula \[-\lambda x = ln(1-u)\]
+\end_inset
+
+ 
+\begin_inset Formula \[x = -\frac {ln(1-u)}{\lambda}\]
+\end_inset
+
+ Můžeme však ušetřit jedno odečítání, protože 
+\begin_inset Formula \[(1-u) \in Uniform(0,1)\]
+\end_inset
+
+ stejně jako 
+\begin_inset Formula \[u \in Uniform(0,1)\]
+\end_inset
+
+ takže výsledná funkce transformující normalizované rovnoměrné rozdělení na exponenciální je 
+\begin_inset Formula \[x = -\frac{ln(u)}{\lambda}\]
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+POZN.: Knihovna pro generování pseudonáhodných čísel i tento dokument používá jako parametr exponenciálního rozdělení hodnotu 
+\begin_inset Formula $\lambda$
+\end_inset
+
+, avšak někdy se exponenciální rozdělení definuje parametrem 
+\begin_inset Formula $\delta = \frac{1}{\lambda}$
+\end_inset
+
+, tedy svou střední hodnotou.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Weibullovo rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Weibullovo rozdělení popisuje takovou náhodnou veličinu X, která vyjadřuje čekání na událost, jež se může může dostavit s šancí úměrnou mocninné funkci dosud pročekané doby [INM, slide 58]. Používá se všude tam, kde nevyhovuje „rozdělení bez paměti“, tedy exponenciální 
+\begin_inset LatexCommand cite
+after ""
+key "IASTAT"
+
+\end_inset
+
+ 
+\begin_inset LatexCommand cite
+after ""
+key "HOMEN"
+
+\end_inset
+
+. V praxi se jedná o zařízení, kde se projevuje mechanické opotřebení nebo únava materiálu 
+\begin_inset LatexCommand cite
+after ""
+key "HOMEN"
+
+\end_inset
+
+. Toto spojité rozložení má dva kladné parametry, které se nazývají měřítko a tvar (forma) 
+\begin_inset LatexCommand cite
+after ""
+key "Toupal"
+
+\end_inset
+
+ 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+. Pokud je tvar 
+\begin_inset Formula $>$
+\end_inset
+
+ 1, je charakterizováno zařízení, u kterého se pravděpodobnost poruchy zvyšuje, naopak pro tvar 
+\begin_inset Formula $<$
+\end_inset
+
+ 1 se pravděpodobnost poruchy snižuje. Je-li tvar = 1, jedná se o exponenciální rozdělení 
+\begin_inset LatexCommand cite
+after ""
+key "Toupal"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Označení: 
+\begin_inset Formula $W(tvar, měřítko)$
+\end_inset
+
+, 
+\begin_inset Formula $Wb(tvar, měřítko)$
+\end_inset
+
+ nebo 
+\begin_inset Formula $Weibull(tvar, měřítko)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Při modelování spolehlivosti či selhání například výrobního zařízení se uplatní Weibullovo rozdělení před exponenciálním. Díky simulacím pak lze usnadnit rozhodování, zda se má modelované zařízení nahradit dříve než selže. Dle 
+\begin_inset LatexCommand cite
+after ""
+key "Toupal"
+
+\end_inset
+
+ se využívá i k prezentování výrobních a dodacích časů v průmyslu nebo k předpovědím počasí.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Distribuční funkce Weibullova a exponenciálního rozdělení si jsou dost podobné, neboť Weibullovo rozdělení je (jistým způsobem) zobecněné exponenciální rozdělení 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+. Podobné je i odvození inverzní funkce k distribuční funkci, která je definována jako 
+\begin_inset Formula \[F(x) = 1 – e^{-(\frac{x}{\beta})^{\alpha}},\]
+\end_inset
+
+ kde 
+\begin_inset Formula $\beta$
+\end_inset
+
+ je měřítko a 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ je tvar.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Řekněme, že 
+\begin_inset Formula $u \in Uniform(0,1)$
+\end_inset
+
+ a 
+\begin_inset Formula $u = F(x)$
+\end_inset
+
+, takže po úpravách získáme nejprve 
+\begin_inset Formula \[\left(\frac{x}{\beta}\right)^\alpha = -ln(1-u)\]
+\end_inset
+
+ a poté 
+\begin_inset Formula \[x = \beta * [-ln(1-u)]^{\frac{1}{\alpha}}.\]
+\end_inset
+
+ Podobně jako bylo odstraněno odčítání v argumentu logaritmu u exponenciálního rozdělení, jde odstranit i zde.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Gamma rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Spojité rozdělení, které podobně jako rozdělení Weibullovo má dva parametry pojmenované tvar a měřítko. Odpovídá době čekání na n-tou událost, kde n je parametr tvar. Pro celočíselný tvar přechází na Erlangovo rozdělení 
+\begin_inset LatexCommand cite
+after ""
+key "Wiki2"
+
+\end_inset
+
+, pro tvar = 1 se stává exponenciálním rozdělením 
+\begin_inset LatexCommand cite
+after ""
+key "Wgamma"
+
+\end_inset
+
+. V kombinaci s Poissonovým rozdělením tvoří negativní binomické rozdělení. Využití tohoto rozdělení najdeme (kromě modelování a simulací) ve statistice a meteorologii. 
+\begin_inset LatexCommand cite
+after ""
+key "Wiki2"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Označení: 
+\begin_inset Formula $Gamma(k, \Pi)$
+\end_inset
+
+ nebo 
+\begin_inset Formula $\Gamma(k,  \Pi)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Využití v simulacích je možné pro modely života (umírání) 
+\begin_inset LatexCommand cite
+after ""
+key "Wgamma"
+
+\end_inset
+
+ 
+\begin_inset LatexCommand cite
+after ""
+key "Wiki2"
+
+\end_inset
+
+ nebo také tam, kde nachází uplatnění Erlangovo rozdělení, tedy modelování příchodů, dob čekání nebo u compartment models (česky snad „členěné modely“).
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+V 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+ jsou uvedené dvě metody transformace a to pro pro různé hodnoty parametru k (tvar). Pro 
+\begin_inset Formula $k < 1$
+\end_inset
+
+ je využito vztahu 
+\begin_inset Formula \[y*u^{\frac{1}{k}} \sim \Gamma(k, 1), \text{kde } y \sim \Gamma(k+1, 1) \text{ a } u \sim Uniform(0, 1) \text{\cite{NR}}.\]
+\end_inset
+
+ Pro 
+\begin_inset Formula $k > 1$
+\end_inset
+
+ je použita upravená verze vylučovací metody, kterou vytvořili Marsaglia a Tsang a která využívá Gaussovu křivku, takže její rychlost závisí na rychlosti počítání nejen rovnoměrného ale i normálního rozdělení. Jelikož je metoda poměrně složitá a její výklad by zabral několikero stran, uvádíme pouze informační zdroj, jímž je 
+\begin_inset LatexCommand cite
+after ""
+key "Marsaglia"
+
+\end_inset
+
+.
+\end_layout
+
+\size default
+
+\begin_layout Subsubsection
+
+Poissonovo rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Poissonovo rozdělení je jediné diskrétní rozdělení v knihovně pro generování pseudonáhodných čísel. Úzce souvisí s exponenciálním rozdělením, které popisuje dobu mezi dvěma událostmi, zatímco Poissonovo počet výskytů události za určitou dobu 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+. Použijeme-li parametr rozdělení 
+\begin_inset Formula $\lambda$
+\end_inset
+
+, který zároveň představuje střední hodnotu i rozptyl, můžeme tvrdit, že k výskytu události dochází průměrně jednou za 
+\begin_inset Formula $\frac{1}{\lambda}$
+\end_inset
+
+ časových jednotek, tj. 
+\begin_inset Formula $\lambda$
+\end_inset
+
+-krát za jednu časovou jednotku 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+. Pomocí Poissonova rozdělení jde za určitých podmínek aproximovat binomické rozdělení 
+\begin_inset LatexCommand cite
+after ""
+key "INM"
+
+\end_inset
+
+ a existuje také vztah pro převod na rozdělení exponenciální.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Označení: 
+\begin_inset Formula $P(\lambda)$
+\end_inset
+
+ nebo 
+\begin_inset Formula $Poisson(\lambda)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Poissonovo rozdělení je pro modelování a simulace důležité podobně jako jeho exponenciální protějšek. Modeluje se s ním počet příchodů za jednotku času v systémech hromadné obsluhy nebo obecně počty jakýchkoliv jevů vyskytujících se v určitém časovém kvantu [IMS, slide 91].
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Stejně jako u normálního rozdělení je pro transformaci z rovnoměrného do Poissonova rozdělení použita metoda Ratio-of-Uniforms, která je tedy evidentně použitelná i pro diskrétní rozdělení. Trik převodu reálných hodnot, které jsou umístěné uvnitř metodou žádaného planárního útvaru, na hodnoty diskrétní spočívá v jednoduchém ořezání desetinné části 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+. Pro další detaily však musí zájemce prostudovat principy metody Ratio-of-Uniforms v knize 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+, protože zde není dostatek prostoru tuto metodu vysvětlovat.
+\end_layout
+
+\size default
+
+\begin_layout Section
+
+Architektura knihovny
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Jak již bylo řečeno návrh knihovny využívá objektově orientované paradigma, které se přirozeně promítne také do implementace, pro níž byl vybrán jazyk C++, který toto paradigma podporuje. C++ je rychlý kompilovaný přenositelný jazyk, jenž navíc nabízí techniky generického programování, neboli v terminologii jazyka šablony. Struktura dědičnosti tříd tak, jak byla definována v návrhu je v implementaci rozšířena o čistě virtuální třídu 
+\emph on
+AbstractUniformGenerator
+\emph default
+, která definuje rozhraní pro základní generátor náhodných čísel v rovnoměrném rozdělení, řekněme třeba 
+\emph on
+UniformGenerator
+\emph default
+. Jeho potomkem je pak šablona třídy 
+\emph on
+RandomGenerator
+\emph default
+, jejímž parametrem je právě onen generátor náhodnosti s rovnoměrným rozdělením, což uživateli umožňuje změnu základního generátoru při vytváření instance třídy 
+\emph on
+RandomGenerator
+\emph default
+ za jakýkoliv jiný generátor bez nutnosti zasahovat do kódu knihovny. Jedinou podmínkou je, že uživatelův 
+\emph on
+UniformGenerator
+\emph default
+ bude mít stejný protokol jako 
+\emph on
+AbstractUniformGenerator
+\emph default
+ tedy jinak řečeno, bude jeho potomkem. Dědičnosti tříd je znázorněna na obrázku 
+\begin_inset LatexCommand ref
+reference "diagram2"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+
+\begin_layout Standard
+
+\size large
+
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+
+\size large
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+scalebox{0.4}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics 
+	filename Diagram2.eps
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Caption
+
+\begin_layout Standard
+
+\begin_inset LatexCommand label
+name "diagram2"
+
+\end_inset
+
+Znázornění dědičnosti tříd
+\end_layout
+
+\end_inset
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Knihovna nabízí pouze jeden generátor pseudonáhodných čísel s rovnoměrným rozdělením, jenž implementuje algoritmus Mersenne Twister. Jedná se o převzatou původní implementaci, kterou v jazyce C vytvořili a pod volnou licencí v 
+\begin_inset LatexCommand cite
+after ""
+key "Matsumoto"
+
+\end_inset
+
+ publikovali Matsumoto a Nishimura a kterou do jazyka C++ portoval Jasper Bedaux. V kódu bylo sice provedeno několik změn, ale jedná se spíše o změny formálního rázu za účelem přizpůsobení návrhu knihovny. Základní vlastnosti a srovnání algoritmu se v tomto dokumentu již objevily a jeho podrobný popis je podán tvůrci v článku 
+\begin_inset LatexCommand cite
+after ""
+key "Matsumoto"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Transformace z rovnoměrného rozdělení do všech šesti rozdělení pravděpodobnosti, která knihovna podporuje, jsou implementovány v šabloně třídy 
+\emph on
+RandomGenerator
+\emph default
+ jako její veřejné metody. Použité algoritmy jsou jak původní tak i převzaté a již byly detailněji rozebrány v přecházející části tohoto dokumentu, kde jsou uvedeny postupy odvození (je-li použita metoda inverzní transformace) nebo alespoň zdroje z nichž byly algoritmy čerpány. Z hlediska implementace však jistě stojí za zmínku mechanizmus uložení některých výsledků mezivýpočtů, který je použit pro urychlení generování Poissonova rozdělení za předpokladu, že je aspoň dvakrát za sebou použit stejný parametr. Jinými slovy, je zefektivněno časté po sobě jdoucí generování Poissonova rozdělení se stejným parametrem.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Implementace knihovny je kompletně celá umístěna v hlavičkových souborech a to jednak, protože je to nutnou podmínkou při použití šablon, a jednak z pragmatických důvodů proto, aby se uživatel nemusel starat o kompilaci knihovny a mohl ji jednoduše přiložit direktivou include. Ke knihovně je přiložena implementace funkce logaritmus gamma funkce, jež je použita v některých algoritmech pro urychlení výpočtu faktoriálu 
+\begin_inset LatexCommand cite
+after ""
+key "NR"
+
+\end_inset
+
+. Tato funkce je sice součástí chystaného standardu C++0x jazyka C++, který je na některých platformách již nyní k dispozici ve standardní knihovně funkcí (ač má být oficiálně vydán na až jaře roku 2011) avšak zatím by bez ní knihovna nebyla úplná. V budoucnu, až se standard C++0x rozšíří, jí bude možno z knihovny odstranit.
+\end_layout
+
+\size default
+
+\begin_layout Section
+
+Testování
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Pro testování byly použity platformy Unix a MS Windows. Otestované kompilátory jsou následující: 
+\end_layout
+
+\begin_layout Itemize
+
+\size large
+
+gcc version 4.4.3, 64-bitové PC 
+\end_layout
+
+\begin_layout Itemize
+
+\size large
+
+gcc version 4.4.4, 32-bitové PC 
+\end_layout
+
+\begin_layout Itemize
+
+\size large
+
+MingW-32 
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Knihovna je bez problémů přenositelná. Kromě standardní knihovny funkcí nejsou použity žádné jiné knihovny ani moduly jazyka.
+\end_layout
+
+\size default
+
+\begin_layout Subsection
+
+Testování správnosti generovaných rozdělení
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Důležitým milníkem ve vývoji knihovny bylo otestování správnosti generování implementovaných pravděpodobnostních rozdělení, respektive správnosti transformačních metod. Výstupem testovacího programu je posloupnost čísel v určitém pravděpodobnostním rozdělení a tu je potřeba ověřit.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Existuje sice řada testů, které matematicky dokáží zda daná posloupnost čísel náleží určitému rozdělení pravděpodobnosti, pro testování knihovny byl však vybrán méně exaktní test. Byly vytvořeny skripty pro program gnuplot, což je program určený pro počítačové kreslení grafů, které do jednoho svého výstupu, jímž je rastrový obrázek, vykreslí jeden histogram náhodné posloupnosti 100 000 hodnot a k tomu odpovídající analytické vyjádření funkce hustoty pravděpodobnosti daného rozdělení. Každé rozdělení je takto testováno několikrát, vždy s jinými parametry. Histogram posloupnosti a křivka funkce hustoty pravděpodobnosti spolu musí vždy přesně korelovat. U některých rozdělení odhalila testovací metoda v průběhu testování chyby, které, jak se později ukázalo, byly implementačního rázu; například opačné znaménko u výpočtu v algoritmu transformační metody normálního rozdělení. Chyba se projevila tak, že histogram vykazoval výchylky (ne na celém svém rozsahu) od analytického vyjádření hustoty pravděpodobnosti.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Všechna rozdělení úspěšně prošla řadou testů s různými parametry.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Ke knihovně jsou přiloženy také testovací skripty pro program gnuplot, které se spouští pomocí testovacího programu (je třeba mít nainstalovaný program gnuplot), takže je možno vyzkoušet a nahlédnout na výsledky tří vybraných posloupností pro každé rozložení (každá posloupnost má samozřejmě jiné přednastavené parametry).
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Pozn.: Grafický výstup nebude fungovat na platformě MS Windows.
+\end_layout
+
+\size default
+
+\begin_layout Section
+
+Závěr
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Byla vytvořena knihovna pro generování pseudonáhodných čísel implementující šest pravděpodobnostních rozdělení pro potřeby modelování a simulací, která jsou generována transformací z volitelného generátoru rovnoměrně rozložené náhodnosti. Knihovna se uplatní při psaní simulačních modelů v jazyce C++, jejichž cílem je efektivní a přesná simulace. Použití knihovny je tak jednoduché jako vložení hlavičkového souboru a vytvoření instance třídy, přičemž má uživatel možnost použít vlastní generátor rovnoměrného rozdělení, pokud nechce použít výchozí, byť kvalitní.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+Návrh a architektura knihovny včetně popisu použitých metod a postupů jsou zdokumentovány, aby pomohly pochopit, jakým způsobem knihovna pracuje, jak může být použita či případně upravena. Dokumentace knihovny si nekladla za cíl dopodrobna vyložit všechny detaily a vysvětlit všechny algoritmy. Mnoho věcí zůstalo skryto, ale vždy bylo ukázáno, kde je možno je najít. To nejdůležitější, jímž je nastínění celkové problematiky, kterou tvorba knihovny pro generování pseudonáhodných čísel představuje, je v dokumentaci obsaženo.
+\end_layout
+
+\begin_layout Standard
+
+\size large
+
+
+\newpage
+ 
+\begin_inset FormulaMacro
+\renewcommand{\refname}{Bibliografie}
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Standard
+
+
+\backslash
+bibliographystyle{czechiso}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset LatexCommand bibtex
+bibfiles "zdroje"
+options "czechiso"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_body
+\end_document

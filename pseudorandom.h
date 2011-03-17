@@ -1,11 +1,26 @@
 /*
- * Soubor:  pseudorandom.h
- * Datum:   12.12.2010
- * Autori:  Pavel Novotny, xnovot28@stud.fit.vutbr.cz
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/*
+ * File:    pseudorandom.h
+ * Date:    12.12.2010
+ * Authors: Pavel Novotny, fandisek@gmail.com
  *          Ota Pavelek, xpavel08@stud.fit.vutbr.cz
- * Projekt: Knihovna pro generovani pseudonahodnych cisel
- * Popis:   Sablona tridy RandomGenerator prijmajici jako parametr generator
- *          nahodnych cisel v rovnomernem rozdeleni
+ * Project: Pseudorandom number generator library
+ * About:   Template class RandomGenerator
  */
 
 #include <iostream>
@@ -13,18 +28,19 @@
 #include <vector>
 #include "lgamma.h"
 #include "mtwister.h"
+#include "carnd.h"
 
 
-/** 
-    Template class Random Generator 
-    with parameter inherited from AbstractUniformGenerator (default MT32)     
+/**
+    Template class Random Generator
+    with parameter inherited from AbstractUniformGenerator (default MT32)
 **/
 template <class UniformGenerator = MT32>
 class RandomGenerator : public UniformGenerator
 {
 public:
   /* Constructors & destructors */
-  RandomGenerator()         : UniformGenerator(),     old_lambda(-1.) {}  
+  RandomGenerator()         : UniformGenerator(),     old_lambda(-1.) {}
   RandomGenerator(int seed) : UniformGenerator(seed), old_lambda(-1.) {}
   ~RandomGenerator() {}
 
@@ -44,30 +60,30 @@ private:
 };
 
 
-/** 
+/**
     Uniform derivation  <->  Uniform(a,b)
 **/
 /* Parameters: Minimal and maximal boundary od random number */
 template <class UniformGenerator>
-double 
+double
 RandomGenerator<UniformGenerator>::Uniform(double min, double max)
 {
   if (min >= max) {
     std::cerr<< "Bad parameter in Uniform distribution" <<std::endl;
     throw;
   }
-  return (min + (max - min) * this->Random_real1());   
+  return (min + (max - min) * this->Random_real1());
 }
 
 
-/** 
+/**
     Exponential derivation  <->  Exp(lambda)
 **/
 /* Parameter: Rate lambda */
 template <class UniformGenerator>
-double 
+double
 RandomGenerator<UniformGenerator>::Exponential(double lambda)
-{   
+{
   if (lambda <= 0) {
     std::cerr<< "Bad parameter in Exponential distribution" <<std::endl;
     throw;
@@ -76,12 +92,12 @@ RandomGenerator<UniformGenerator>::Exponential(double lambda)
 }
 
 
-/** 
+/**
     Normal derivation  <->  Normal(mu, sigma^2)
 **/
 /* Parameters: Mean mu & squared scale sigma */
 template <class UniformGenerator>
-double 
+double
 RandomGenerator<UniformGenerator>::Normal(double mu, double sigma)
 {
   if (sigma <= 0) {
@@ -100,28 +116,28 @@ RandomGenerator<UniformGenerator>::Normal(double mu, double sigma)
 }
 
 
-/** 
+/**
     Weibull derivation  <->  Weibull(k, lambda)
 **/
 /* Parameters: Shape k and scale lambda */
 template <class UniformGenerator>
-double 
+double
 RandomGenerator<UniformGenerator>::Weibull(double shape, double scale)
-{   
+{
   if (shape <= 0 || scale <= 0) {
-    std::cerr<< "Bad parameter in Weibull distribution" <<std::endl;    
+    std::cerr<< "Bad parameter in Weibull distribution" <<std::endl;
     throw;
   }
   return 1./scale * std::pow(-std::log(this->Random_real3()), 1./ shape);
 }
 
 
-/** 
+/**
     Poisson derivation  <->  Poisson(lambda)
 **/
 /* Parameter: Expected number of occurrences lambda */
 template <class UniformGenerator>
-int 
+int
 RandomGenerator<UniformGenerator>::Poisson(double lambda)
 {
   if (lambda <= 0) {
@@ -133,7 +149,7 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
     log_fact.assign(1024, -1.); // precomputed log-factorial
   int k;
   if (lambda < .5) { // use PRODUCT OF UNIFORMS method - Knuth
-    if (lambda != old_lambda) 
+    if (lambda != old_lambda)
       exp_lambda = std::exp(-lambda);
     k = -1;
     t = 1.;
@@ -149,7 +165,7 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
     }
     while (true) {
       u = 0.64 * this->Random_real1();
-      v = -0.68 + 1.28 * this->Random_real1();    
+      v = -0.68 + 1.28 * this->Random_real1();
       if (lambda > 13.5) { // outer squeeze for fast rejection
         v2 = v * v;
         if (v >= 0.) {
@@ -162,7 +178,7 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
         }
       }
       k = int(std::floor(sqr_lambda * (v / u) + lambda + 0.5));
-      if (k < 0) 
+      if (k < 0)
         continue;
       u2 = u * u;
       if (lambda > 13.5) {
@@ -172,7 +188,7 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
         }
         else {
           if (v2 < 6.76 * u2 * (0.62 - u) * (1.4 - u))
-            break;          
+            break;
         }
       }
       // using precomputed log-factorials or computing them
@@ -181,7 +197,7 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
           log_fact[k] = lgamma(k + 1.);
         lfac = log_fact[k];
       }
-      else 
+      else
         lfac = lgamma(k + 1.);
       p = sqr_lambda * std::exp(-lambda + k * log_lambda - lfac);
       if (u2 < p)
@@ -193,13 +209,13 @@ RandomGenerator<UniformGenerator>::Poisson(double lambda)
 }
 
 
-/** 
+/**
     Gamma derivation  <->  Gamma(a, b)
 **/
 /* Parameters: Shape alpha and scale beta */
 template <class UniformGenerator>
-double 
-RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta) 
+double
+RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta)
 {
   double oalpha, a1, a2;
   oalpha = alpha;
@@ -227,6 +243,6 @@ RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta)
     return a1*v/beta;
   }
   else {// Case where alpha < 1, per Ripley.
-    return pow(this->Random_real3(), 1./ oalpha) * a1 * v / beta;    
+    return pow(this->Random_real3(), 1./ oalpha) * a1 * v / beta;
   }
 }
