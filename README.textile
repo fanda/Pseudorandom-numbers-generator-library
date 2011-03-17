@@ -8,6 +8,6 @@ used probability distributions.
 
 h1. Using
 
-#Include _pseudorandom.h_ in Your project
-#Create generator object: RandomGenerator<MT32> rg((unsigned long)time(NULL));
-#Use: double exp = rg.Exponential(3);
+# Include _pseudorandom.h_ in Your project
+# Create generator object: RandomGenerator<MT32> rg((unsigned long)time(NULL));
+# Use: double exp = rg.Exponential(3);
