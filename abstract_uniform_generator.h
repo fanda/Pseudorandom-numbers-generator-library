@@ -18,7 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * File:    abstract_uniform_generator.h
  * Date:    12.12.2010
  * Authors: Pavel Novotny, fandisek@gmail.com
- *          Ota Pavelek, xpavel08@stud.fit.vutbr.cz
  * Project: Pseudorandom number generator library
  * About:   Interface for uniform pseudorandom number generator
  */

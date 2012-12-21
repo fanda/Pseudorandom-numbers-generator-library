@@ -29,3 +29,13 @@ h2. Uniform generator change
 Just pass class as teplate argument while creating RandomGenerator object.
 RandomGenerator<MT32> rg((unsigned long)time(NULL));
 RandomGenerator<CA>   rg((unsigned long)time(NULL));
+
+h1. News
+
+h2. 24. 7. 2011
+
+Pareto and Rayleigh distributions added.
+More information about:
+http://en.wikipedia.org/wiki/Pareto_distribution
+http://www.brighton-webs.co.uk/distributions/pareto.asp
+http://en.wikipedia.org/wiki/Rayleigh_distribution

@@ -18,7 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * File:    pseudorandom.h
  * Date:    12.12.2010
  * Authors: Pavel Novotny, fandisek@gmail.com
- *          Ota Pavelek, xpavel08@stud.fit.vutbr.cz
  * Project: Pseudorandom number generator library
  * About:   Template class RandomGenerator
  */
@@ -51,6 +50,8 @@ public:
   double Weibull(double shape, double scale);
   int    Poisson(double lambda);
   double Gamma(double alpha, double beta);
+  double Pareto(double l, double sig, double y);
+  double Rayleigh(double sig);
 
 private:
   /* Memory for sped up Poisson distribution */
@@ -245,4 +246,34 @@ RandomGenerator<UniformGenerator>::Gamma(double alpha, double beta)
   else {// Case where alpha < 1, per Ripley.
     return pow(this->Random_real3(), 1./ oalpha) * a1 * v / beta;
   }
+}
+
+/**
+    Pareto distribution, type III  <->  Pareto(l, sig, y)
+**/
+/* Parameters: Location l, scale sig and inequality parameter y */
+template <class UniformGenerator>
+double
+RandomGenerator<UniformGenerator>::Pareto(double l, double sig, double y)
+{
+  if (sig <= 0) {
+    std::cerr<< "Bad parameter in Pareto distribution" <<std::endl;
+    throw;
+  }
+  return l+((sig * (pow(this->Random_real3(),(- 1 * y))- 1)) / y);
+}
+
+/**
+    Rayleigh distribution  <->  Rayleigh(sig)
+**/
+/* Parameters: sig */
+template <class UniformGenerator>
+double
+RandomGenerator<UniformGenerator>::Rayleigh(double sig)
+{
+  if (sig <= 0) {
+    std::cerr<< "Bad parameter in Rayleigh distribution" <<std::endl;
+    throw;
+  }
+  return sig*sqrt(-2 *log(1-this->Random_real3()));
 }
